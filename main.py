@@ -1,8 +1,13 @@
 import os
+import io
 import telebot
 import pronotepy
 import datetime
 import requests
+import json
+from pyzbar.pyzbar import decode
+from PIL import Image
+from uuid import uuid4
 from dotenv import load_dotenv
 from kvsqlite.sync import Client
 from pronotepy.ent import lyceeconnecte_aquitaine
@@ -51,8 +56,10 @@ def login(message):
         bot.reply_to(message, f"You are already logged in as {client.username}\nSend /logout if you want to change the account.")
         return
     available_login_methods_keyboard=InlineKeyboardMarkup()
+    qrcode_button=InlineKeyboardButton(text="QR Code (Recommended)", callback_data="login_qrcode")
     pronote_button=InlineKeyboardButton(text="Pronote", callback_data="login_pronote")
     lyceeconnecte_aquitaine_button=InlineKeyboardButton(text="Lycée Connecté (Local)", callback_data="login_lyceeconnecte_aquitaine")
+    available_login_methods_keyboard.row(qrcode_button)
     available_login_methods_keyboard.row(pronote_button)
     available_login_methods_keyboard.row(lyceeconnecte_aquitaine_button)
     bot.send_message(
@@ -64,10 +71,70 @@ def login(message):
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith("login_"))
 def handle_login_method(call):
-	if call.data=="login_pronote":
-		handle_login_pronote(call)
-	elif call.data=="login_lyceeconnecte_aquitaine":
-		handle_login_lyceeconnecte_aquitaine(call)
+    if call.data=="login_qrcode":
+        handle_login_qrcode(call)
+    elif call.data=="login_pronote":
+        handle_login_pronote(call)
+    elif call.data=="login_lyceeconnecte_aquitaine":
+        handle_login_lyceeconnecte_aquitaine(call)
+
+def handle_login_qrcode(call):
+    msg=bot.edit_message_text(
+        message_id=call.message.id,
+        chat_id=call.message.chat.id,
+        text="Please send your QR Code image provided by the pronote desktop website:\nNote : you can screenshot the QR code and send it."
+    )
+    bot.register_next_step_handler(msg, process_login_qrcode)
+
+def process_login_qrcode(message):
+    if message.content_type!="photo" or not message.photo:
+        bot.reply_to(message, "Please send photo.")
+        return
+    photo_file_id = message.photo[-1].file_id
+    photo_file_info = bot.get_file(photo_file_id)
+    downloaded_photo_file = bot.download_file(photo_file_info.file_path)
+
+    image_stream = io.BytesIO(downloaded_photo_file)
+    img = Image.open(image_stream)
+    decoded_objects = decode(img)
+
+    try:
+        qrcode_data=json.loads(decoded_objects[0].data.decode("utf-8"))
+    except Exception as e:
+        print("Can not decode QR code, make sure the QR code is entirly visible in the photo.")
+        bot.reply_to(message, "Can not decode QR code, make sure the QR code is entirly visible in the photo.")
+        return
+
+    msg=bot.reply_to(message, "Send your 4-digits PIN:")
+    bot.register_next_step_handler(msg, process_login_qrcode_pin_handler, qrcode_data)
+
+def process_login_qrcode_pin_handler(message, qrcode_data):
+    pin=message.text
+    if len(pin)!=4 or not pin.isdigit():
+        bot.reply_to(message, "Please send only 4-digits PIN.")
+        return
+    
+    try:
+        client=pronotepy.Client.qrcode_login(qrcode_data, pin, str(uuid4()))
+    except Exception as e:
+        bot.reply_to(message, "Can not login with QR code, make sure the QR code and the PIN are valid.")
+        print("Can not login with QR code, make sure the QR code and the PIN are valid.")
+        return
+    
+    if client.logged_in:
+        credentials = {
+            "login_method": "qrcode",
+            "client": client,
+            "url": client.pronote_url,
+            "username": client.username,
+            "password": client.password,
+            "uuid": client.uuid,
+        }
+        clients[message.chat.id]=credentials
+        bot.send_message(message.chat.id, "Login successful! Use /grades, /homework, or /timetable to access your data.")
+    else:
+        bot.send_message(message.chat.id, "Login failed. Please check your credentials and try again.")
+    
 
 def handle_login_pronote(call):
     msg=bot.edit_message_text(
@@ -81,10 +148,17 @@ def process_login_pronote(message):
     try:
         url, username, password = message.text.split(',')
         client = pronotepy.Client(url.strip(), username.strip(), password.strip())
-        #client.session_check()
 
         if client.logged_in:
-            set_session(message.chat.id, client)
+            credentials = {
+                "login_method": "qrcode",
+                "client": client,
+                "url": client.pronote_url,
+                "username": client.username,
+                "password": client.password,
+                "uuid": client.uuid,
+            }
+            clients[message.chat.id]=credentials
             bot.send_message(message.chat.id, "Login successful! Use /grades, /homework, or /timetable to access your data.")
         else:
             bot.send_message(message.chat.id, "Login failed. Please check your credentials and try again.")
@@ -111,13 +185,17 @@ def process_login_lyceeconnecte_aquitaine(message):
         )
         client.username=username
         client.password=password
-        print(client.username)
-        print(client.password)
-        #client.session_check()
 
         if client.logged_in:
-            set_session(message.chat.id, client)
-            #clients[message.chat.id]=client
+            credentials = {
+                "login_method": "qrcode",
+                "client": client,
+                "url": client.pronote_url,
+                "username": client.username,
+                "password": client.password,
+                "uuid": client.uuid,
+            }
+            clients[message.chat.id]=credentials
             bot.send_message(message.chat.id, "Login successful! Use /grades, /homework, or /timetable to access your data.")
         else:
             bot.send_message(message.chat.id, "Login failed. Please check your credentials and try again.")
@@ -129,10 +207,10 @@ def process_login_lyceeconnecte_aquitaine(message):
 # Command to get grades
 @bot.message_handler(commands=['grades'])
 def get_grades(message):
-    client = get_session(message.chat.id)
-    #client=clients[message.chat.id]
-    if client:
-        #client.session_check()
+    client_credentials = clients.get(message.chat.id)
+    if client_credentials:
+        client=client_credentials["client"]
+        client.session_check()
         grades = client.current_period.grades
         response = "Your Grades:\n" + "\n".join([f"{grade.grade}: {grade.subject.name}" for grade in grades])
         bot.send_message(message.chat.id, response)
@@ -142,9 +220,10 @@ def get_grades(message):
 # Command to get homework
 @bot.message_handler(commands=['homework'])
 def get_homework(message):
-    client = get_session(message.chat.id)
-    if client:
-        #client.session_check()
+    client_credentials = clients.get(message.chat.id)
+    if client_credentials:
+        client=client_credentials["client"]
+        client.session_check()
         homeworks = client.homework(
             date_from=client.start_day,
             #date_to=client.start_day+datetime.timedelta(days=22)
@@ -157,10 +236,10 @@ def get_homework(message):
 # Command to get timetable
 @bot.message_handler(commands=['timetable'])
 def get_timetable(message):
-    client = get_session(message.chat.id)
-    if client:
-        #client.session_check()
-        #timetable = client.timetable()
+    client_credentials = clients.get(message.chat.id)
+    if client_credentials:
+        client=client_credentials["client"]
+        client.session_check()
         timetable = client.lessons(client.start_day + datetime.timedelta(days=4))
 
         response = "Your Timetable:\n" + "\n".join([f"{lesson.start.strftime('%A %d %B %Y %H:%M')}: {lesson.subject.name}" for lesson in timetable])
