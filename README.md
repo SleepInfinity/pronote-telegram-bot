@@ -45,6 +45,7 @@ A Python-based Telegram bot that interacts with Pronote to provide students and 
     ```
 
     Replace `your_telegram_bot_token` with your actual Telegram bot token.
+    If you don't know how to get the bot token you can take a look at [obtain-your-bot-token](https://core.telegram.org/bots/tutorial#obtain-your-bot-token)
 
 4. **Run the bot:**
 
