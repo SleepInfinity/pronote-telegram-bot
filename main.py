@@ -318,7 +318,7 @@ def get_timetable(message):
 def logout_credentials(user_id):
     client_credentials = clients.get(user_id)
     if client_credentials:
-        del client_credentials[user_id]
+        del clients[user_id]
         return True
     return False
 
