@@ -26,23 +26,6 @@ TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_TOKEN')
 
 bot = telebot.TeleBot(TELEGRAM_BOT_TOKEN)
 
-def get_session(user_id):
-    user_sessions = db.get("user_sessions") or {}
-    return user_sessions.get(user_id)
-
-def set_session(user_id, client):
-    user_sessions = db.get("user_sessions") or {}
-    user_sessions[user_id] = client
-    db.set("user_sessions", user_sessions)
-
-def delete_session(user_id):
-    user_sessions = db.get("user_sessions") or {}
-    if user_id in user_sessions:
-        del user_sessions[user_id]
-        db.set("user_sessions", user_sessions)
-        return True
-    return False
-
 def get_user_lang(user_id):
     user_languages = db.get("user_languages") or {}
     return user_languages.get(user_id)
@@ -85,8 +68,9 @@ def start(message):
 
 @bot.message_handler(commands=['login'])
 def login(message):
-    client = get_session(message.chat.id)
-    if client:
+    client_credentials = clients.get(message.chat.id)
+    if client_credentials:
+        client=client_credentials["client"]
         bot.reply_to(message, languages[get_user_lang(message.chat.id)]["already_logged_in"].format(username=client.username))
         return
     available_login_methods_keyboard = InlineKeyboardMarkup()
@@ -309,9 +293,16 @@ def get_timetable(message):
     else:
         bot.send_message(message.chat.id, languages[get_user_lang(message.chat.id)]["not_logged_in"])
 
+def logout_credentials(user_id):
+    client_credentials = clients.get(user_id)
+    if client_credentials:
+        del client_credentials[user_id]
+        return True
+    return False
+
 @bot.message_handler(commands=['logout'])
 def logout(message):
-    if delete_session(message.chat.id):
+    if logout_credentials(message.chat.id):
         bot.send_message(message.chat.id, languages[get_user_lang(message.chat.id)]["logout_successful"])
     else:
         bot.send_message(message.chat.id, languages[get_user_lang(message.chat.id)]["not_logged_in"])
