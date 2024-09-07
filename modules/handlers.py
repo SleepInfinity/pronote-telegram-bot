@@ -1,12 +1,7 @@
 import datetime
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
-import pronotepy
 import locale
-from uuid import uuid4
-from PIL import Image
-import io
 from bot_instance import bot
-from pyzbar.pyzbar import decode
 from modules.auth import handle_login_lyceeconnecte_aquitaine, handle_login_pronote, handle_login_qrcode, logout_credentials
 from modules.database import get_user_lang, set_user_lang, clients
 from modules.language import setup_user_lang, languages
