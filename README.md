@@ -25,33 +25,40 @@ A Python-based Telegram bot that interacts with Pronote to provide students and 
 
 1. **Clone the repository:**
 
-    ```bash
-    git clone https://github.com/SleepInfinity/pronote-telegram-bot.git
-    cd pronote-telegram-bot
-    ```
+   ```bash
+   git clone https://github.com/SleepInfinity/pronote-telegram-bot.git
+   cd pronote-telegram-bot
+   ```
 
 2. **Install the dependencies:**
 
-    ```bash
-    pip install -r requirements.txt
-    ```
+   ```bash
+   pip install -r requirements.txt
+   ```
 
 3. **Set up your environment variables:**
 
-    Create a `.env` file in the root directory of the project with the following variable:
+   Create a `.env` file in the root directory of the project with the following variable:
 
-    ```env
-    TELEGRAM_TOKEN=your_telegram_bot_token
-    ```
+   ```env
+   TELEGRAM_TOKEN=your_telegram_bot_token
+   ```
 
-    Replace `your_telegram_bot_token` with your actual Telegram bot token.
-    If you don't know how to get the bot token you can take a look at [obtain-your-bot-token](https://core.telegram.org/bots/tutorial#obtain-your-bot-token)
+   Replace `your_telegram_bot_token` with your actual Telegram bot token.
+   If you don't know how to get the bot token you can take a look at [obtain-your-bot-token](https://core.telegram.org/bots/tutorial#obtain-your-bot-token)
 
-4. **Run the bot:**
+4. **Windows Users:**
 
-    ```bash
-    python main.py
-    ```
+   If you encounter an ImportError when running the bot on Windows, you may need to install the Visual C++ Redistributable Packages for Visual Studio 2013. Download and install the appropriate version:
+
+   - [vcredist_x64.exe](https://www.microsoft.com/en-us/download/details.aspx?id=40784) if using 64-bit Python.
+   - [vcredist_x86.exe](https://www.microsoft.com/en-us/download/details.aspx?id=40784) if using 32-bit Python.
+
+5. **Run the bot:**
+
+   ```bash
+   python main.py
+   ```
 
 ## Usage
 
