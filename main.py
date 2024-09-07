@@ -5,6 +5,7 @@ import pronotepy
 import datetime
 import requests
 import json
+import locale
 from pyzbar.pyzbar import decode
 from PIL import Image
 from uuid import uuid4
@@ -285,20 +286,29 @@ def get_timetable(message):
     client_credentials = clients.get(message.chat.id)
     if client_credentials:
         client = client_credentials['client']
-        timetable = client.timetable(datetime.datetime.now(), datetime.datetime.now() + datetime.timedelta(days=1))
+        days=1
+        for i in range(10):
+            timetable = client.lessons(datetime.datetime.now(), datetime.datetime.now() + datetime.timedelta(days=days))
+            if not timetable:
+                days+=1
+                continue
+            break
 
         if not timetable:
             bot.send_message(message.chat.id, languages[user_lang]["no_timetable"])
             return
 
-        timetable_message = languages[user_lang]["timetable_header"]
+        user_locale = languages[user_lang]["locale"]
+        locale.setlocale(locale.LC_TIME, user_locale)
+
+        timetable_message = languages[user_lang]["timetable_header"].format(date=timetable[0].start.strftime('%A %d %B'))
         for lesson in timetable:
             timetable_message += languages[user_lang]["timetable_entry"].format(
                 subject=lesson.subject.name,
                 teacher=lesson.teacher_name,
-                start_time=lesson.start.strftime('%d/%m/%Y %H:%M'),
+                start_time=lesson.start.strftime('%H:%M'),
                 end_time=lesson.end.strftime('%H:%M'),
-                room=lesson.room if lesson.room else languages[user_lang]["no_room"]
+                room=lesson.classroom if lesson.classroom else languages[user_lang]["no_room"]
             )
 
         bot.send_message(message.chat.id, timetable_message)

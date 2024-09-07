@@ -1,5 +1,6 @@
 {
   "en": {
+    "locale": "en_US.UTF-8",
     "choose_language": "Please choose your language:",
     "language_set": "Language has been set successfully. now send /start",
     "welcome": "Welcome to the Pronote bot! Use /login to get started.",
@@ -28,13 +29,14 @@
     "homework_entry": "Subject: {subject}\nDescription: {description}\nDue Date: {due_date}\nStatus: {done}\n\n",
     "done": "Done",
     "not_done": "Not done",
-    "no_timetable": "No timetable found.",
-    "timetable_header": "Here is your timetable for the next day:\n",
+    "no_timetable": "No timetable found for the next 10 days.",
+    "timetable_header": "Here is your timetable for {date}:\n\n",
     "timetable_entry": "Subject: {subject}\nTeacher: {teacher}\nStart Time: {start_time}\nEnd Time: {end_time}\nRoom: {room}\n\n",
     "no_room": "No room assigned.",
     "logout_successful": "You have been logged out successfully."
   },
   "fr": {
+    "locale": "fr_FR.UTF-8",
     "choose_language": "Veuillez choisir votre langue:",
     "language_set": "La langue a été définie avec succès. Maintenant, envoyez /start",
     "welcome": "Bienvenue sur le bot Pronote ! Utilisez /login pour commencer.",
@@ -63,8 +65,8 @@
     "homework_entry": "Matière : {subject}\nDescription : {description}\nDate limite : {due_date}\nStatut : {done}\n\n",
     "done": "Terminé",
     "not_done": "Non terminé",
-    "no_timetable": "Aucun emploi du temps trouvé.",
-    "timetable_header": "Voici votre emploi du temps pour le lendemain :\n",
+    "no_timetable": "Aucun emploi du temps trouvé pour les 10 prochains jours.",
+    "timetable_header": "Voici votre emploi du temps pour le {date} :\n\n",
     "timetable_entry": "Matière : {subject}\nProfesseur : {teacher}\nHeure de début : {start_time}\nHeure de fin : {end_time}\nSalle : {room}\n\n",
     "no_room": "Aucune salle assignée.",
     "logout_successful": "Vous avez été déconnecté avec succès."
