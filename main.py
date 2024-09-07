@@ -51,38 +51,41 @@ def setup_user_lang(user_id):
 def setup_user_lang_query_handler(call):
     lang = call.data.split("set_lang_")[1]
     set_user_lang(call.message.chat.id, lang)
+    user_lang=get_user_lang(call.message.chat.id)
     bot.edit_message_text(
         message_id=call.message.id, 
         chat_id=call.message.chat.id, 
-        text=languages[get_user_lang(call.message.chat.id)]["language_set"]
+        text=languages[user_lang]["language_set"]
     )
 
 @bot.message_handler(commands=['start'])
 def start(message):
     if not setup_user_lang(message.chat.id):
         return
+    user_lang=get_user_lang(message.chat.id)
     bot.send_message(
         message.chat.id, 
-        languages[get_user_lang(message.chat.id)]["welcome"]
+        languages[user_lang]["welcome"]
     )
 
 @bot.message_handler(commands=['login'])
 def login(message):
+    user_lang=get_user_lang(message.chat.id)
     client_credentials = clients.get(message.chat.id)
     if client_credentials:
         client=client_credentials["client"]
-        bot.reply_to(message, languages[get_user_lang(message.chat.id)]["already_logged_in"].format(username=client.username))
+        bot.reply_to(message, languages[user_lang]["already_logged_in"].format(username=client.username))
         return
     available_login_methods_keyboard = InlineKeyboardMarkup()
-    qrcode_button = InlineKeyboardButton(text=languages[get_user_lang(message.chat.id)]["qrcode_login"], callback_data="login_qrcode")
-    pronote_button = InlineKeyboardButton(text=languages[get_user_lang(message.chat.id)]["pronote_login"], callback_data="login_pronote")
-    lyceeconnecte_aquitaine_button = InlineKeyboardButton(text=languages[get_user_lang(message.chat.id)]["lycee_connecte_local"], callback_data="login_lyceeconnecte_aquitaine")
+    qrcode_button = InlineKeyboardButton(text=languages[user_lang]["qrcode_login"], callback_data="login_qrcode")
+    pronote_button = InlineKeyboardButton(text=languages[user_lang]["pronote_login"], callback_data="login_pronote")
+    lyceeconnecte_aquitaine_button = InlineKeyboardButton(text=languages[user_lang]["lycee_connecte_local"], callback_data="login_lyceeconnecte_aquitaine")
     available_login_methods_keyboard.row(qrcode_button)
     available_login_methods_keyboard.row(pronote_button)
     available_login_methods_keyboard.row(lyceeconnecte_aquitaine_button)
     bot.send_message(
         message.chat.id, 
-        languages[get_user_lang(message.chat.id)]["select_login_method"],
+        languages[user_lang]["select_login_method"],
         reply_markup=available_login_methods_keyboard
     )
 
@@ -96,16 +99,18 @@ def handle_login_method(call):
         handle_login_lyceeconnecte_aquitaine(call)
 
 def handle_login_qrcode(call):
+    user_lang=get_user_lang(call.message.chat.id)
     msg = bot.edit_message_text(
         message_id=call.message.id,
         chat_id=call.message.chat.id,
-        text=languages[get_user_lang(call.message.chat.id)]["send_qrcode"]
+        text=languages[user_lang]["send_qrcode"]
     )
     bot.register_next_step_handler(msg, process_login_qrcode)
 
 def process_login_qrcode(message):
+    user_lang=get_user_lang(message.chat.id)
     if message.content_type != "photo" or not message.photo:
-        bot.reply_to(message, languages[get_user_lang(message.chat.id)]["please_send_photo"])
+        bot.reply_to(message, languages[user_lang]["please_send_photo"])
         return
     photo_file_id = message.photo[-1].file_id
     photo_file_info = bot.get_file(photo_file_id)
@@ -118,24 +123,23 @@ def process_login_qrcode(message):
     try:
         qrcode_data = json.loads(decoded_objects[0].data.decode("utf-8"))
     except Exception as e:
-        print(languages[get_user_lang(message.chat.id)]["qrcode_decode_error"])
-        bot.reply_to(message, languages[get_user_lang(message.chat.id)]["qrcode_decode_error"])
+        bot.reply_to(message, languages[user_lang]["qrcode_decode_error"])
         return
 
-    msg = bot.reply_to(message, languages[get_user_lang(message.chat.id)]["send_pin"])
+    msg = bot.reply_to(message, languages[user_lang]["send_pin"])
     bot.register_next_step_handler(msg, process_login_qrcode_pin_handler, qrcode_data)
 
 def process_login_qrcode_pin_handler(message, qrcode_data):
+    user_lang=get_user_lang(message.chat.id)
     pin = message.text
     if len(pin) != 4 or not pin.isdigit():
-        bot.reply_to(message, languages[get_user_lang(message.chat.id)]["please_send_4_digits"])
+        bot.reply_to(message, languages[user_lang]["please_send_4_digits"])
         return
     
     try:
         client = pronotepy.Client.qrcode_login(qrcode_data, pin, str(uuid4()))
     except Exception as e:
-        bot.reply_to(message, languages[get_user_lang(message.chat.id)]["login_failed"])
-        print(languages[get_user_lang(message.chat.id)]["login_failed"])
+        bot.reply_to(message, languages[user_lang]["login_failed"])
         return
     
     if client.logged_in:
@@ -148,19 +152,21 @@ def process_login_qrcode_pin_handler(message, qrcode_data):
             "uuid": client.uuid,
         }
         clients[message.chat.id] = credentials
-        bot.send_message(message.chat.id, languages[get_user_lang(message.chat.id)]["login_successful"])
+        bot.send_message(message.chat.id, languages[user_lang]["login_successful"])
     else:
-        bot.send_message(message.chat.id, languages[get_user_lang(message.chat.id)]["login_failed"])
+        bot.send_message(message.chat.id, languages[user_lang]["login_failed"])
 
 def handle_login_pronote(call):
+    user_lang=get_user_lang(call.message.chat.id)
     msg = bot.edit_message_text(
         message_id=call.message.id,
         chat_id=call.message.chat.id,
-        text=languages[get_user_lang(call.message.chat.id)]["send_pronote_credentials"]
+        text=languages[user_lang]["send_pronote_credentials"]
     )
     bot.register_next_step_handler(msg, process_login_pronote)
 
 def process_login_pronote(message):
+    user_lang=get_user_lang(message.chat.id)
     try:
         url, username, password = message.text.split(',')
         client = pronotepy.Client(url.strip(), username.strip(), password.strip())
@@ -175,22 +181,24 @@ def process_login_pronote(message):
                 "uuid": client.uuid,
             }
             clients[message.chat.id] = credentials
-            bot.send_message(message.chat.id, languages[get_user_lang(message.chat.id)]["login_successful"])
+            bot.send_message(message.chat.id, languages[user_lang]["login_successful"])
         else:
-            bot.send_message(message.chat.id, languages[get_user_lang(message.chat.id)]["login_failed"])
+            bot.send_message(message.chat.id, languages[user_lang]["login_failed"])
     except Exception as e:
-        bot.send_message(message.chat.id, languages[get_user_lang(message.chat.id)]["error_logging_in"])
+        bot.send_message(message.chat.id, languages[user_lang]["error_logging_in"])
         print(e)
 
 def handle_login_lyceeconnecte_aquitaine(call):
+    user_lang=get_user_lang(call.message.chat.id)
     msg = bot.edit_message_text(
         message_id=call.message.id,
         chat_id=call.message.chat.id,
-        text=languages[get_user_lang(call.message.chat.id)]["send_lyceeconnecte_credentials"]
+        text=languages[user_lang]["send_lyceeconnecte_credentials"]
     )
     bot.register_next_step_handler(msg, process_login_lyceeconnecte_aquitaine)
 
 def process_login_lyceeconnecte_aquitaine(message):
+    user_lang=get_user_lang(message.chat.id)
     try:
         url, username, password = message.text.split(',')
         client = pronotepy.Client(
@@ -212,86 +220,89 @@ def process_login_lyceeconnecte_aquitaine(message):
                 "uuid": client.uuid,
             }
             clients[message.chat.id] = credentials
-            bot.send_message(message.chat.id, languages[get_user_lang(message.chat.id)]["login_successful"])
+            bot.send_message(message.chat.id, languages[user_lang]["login_successful"])
         else:
-            bot.send_message(message.chat.id, languages[get_user_lang(message.chat.id)]["login_failed"])
+            bot.send_message(message.chat.id, languages[user_lang]["login_failed"])
     except Exception as e:
-        bot.send_message(message.chat.id, languages[get_user_lang(message.chat.id)]["error_logging_in"])
+        bot.send_message(message.chat.id, languages[user_lang]["error_logging_in"])
         print(e)
 
 @bot.message_handler(commands=['grades'])
 def get_grades(message):
+    user_lang=get_user_lang(message.chat.id)
     client_credentials = clients.get(message.chat.id)
     if client_credentials:
         client = client_credentials['client']
         grades = client.current_period.grades
 
         if not grades:
-            bot.send_message(message.chat.id, languages[get_user_lang(message.chat.id)]["no_grades"])
+            bot.send_message(message.chat.id, languages[user_lang]["no_grades"])
             return
 
-        grades_message = languages[get_user_lang(message.chat.id)]["grades_header"].format(period=client.current_period.name)
+        grades_message = languages[user_lang]["grades_header"].format(period=client.current_period.name)
         for grade in grades:
-            grades_message += languages[get_user_lang(message.chat.id)]["grade_entry"].format(
+            grades_message += languages[user_lang]["grade_entry"].format(
                 subject=grade.subject.name,
                 grade=grade.grade,
                 out_of=grade.out_of,
                 date=grade.date.strftime('%d/%m/%Y'),
-                comment=grade.comment if grade.comment else languages[get_user_lang(message.chat.id)]["no_comment"]
+                comment=grade.comment if grade.comment else languages[user_lang]["no_comment"]
             )
                 
         bot.send_message(message.chat.id, grades_message)
     else:
-        bot.send_message(message.chat.id, languages[get_user_lang(message.chat.id)]["not_logged_in"])
+        bot.send_message(message.chat.id, languages[user_lang]["not_logged_in"])
 
 @bot.message_handler(commands=['homework'])
 def get_homework(message):
+    user_lang=get_user_lang(message.chat.id)
     client_credentials = clients.get(message.chat.id)
     if client_credentials:
         client = client_credentials['client']
         homework = client.homework(datetime.datetime.now())
 
         if not homework:
-            bot.send_message(message.chat.id, languages[get_user_lang(message.chat.id)]["no_homework"])
+            bot.send_message(message.chat.id, languages[user_lang]["no_homework"])
             return
 
-        homework_message = languages[get_user_lang(message.chat.id)]["homework_header"]
+        homework_message = languages[user_lang]["homework_header"]
         for hw in homework:
-            homework_message += languages[get_user_lang(message.chat.id)]["homework_entry"].format(
+            homework_message += languages[user_lang]["homework_entry"].format(
                 subject=hw.subject.name,
                 description=hw.description,
                 due_date=hw.due_date.strftime('%d/%m/%Y'),
-                done=languages[get_user_lang(message.chat.id)]["done"] if hw.done else languages[get_user_lang(message.chat.id)]["not_done"]
+                done=languages[user_lang]["done"] if hw.done else languages[user_lang]["not_done"]
             )
         
         bot.send_message(message.chat.id, homework_message)
     else:
-        bot.send_message(message.chat.id, languages[get_user_lang(message.chat.id)]["not_logged_in"])
+        bot.send_message(message.chat.id, languages[user_lang]["not_logged_in"])
 
 @bot.message_handler(commands=['timetable'])
 def get_timetable(message):
+    user_lang=get_user_lang(message.chat.id)
     client_credentials = clients.get(message.chat.id)
     if client_credentials:
         client = client_credentials['client']
-        timetable = client.timetable(datetime.datetime.now(), datetime.datetime.now() + datetime.timedelta(days=7))
+        timetable = client.timetable(datetime.datetime.now(), datetime.datetime.now() + datetime.timedelta(days=1))
 
         if not timetable:
-            bot.send_message(message.chat.id, languages[get_user_lang(message.chat.id)]["no_timetable"])
+            bot.send_message(message.chat.id, languages[user_lang]["no_timetable"])
             return
 
-        timetable_message = languages[get_user_lang(message.chat.id)]["timetable_header"]
+        timetable_message = languages[user_lang]["timetable_header"]
         for lesson in timetable:
-            timetable_message += languages[get_user_lang(message.chat.id)]["timetable_entry"].format(
+            timetable_message += languages[user_lang]["timetable_entry"].format(
                 subject=lesson.subject.name,
                 teacher=lesson.teacher_name,
                 start_time=lesson.start.strftime('%d/%m/%Y %H:%M'),
                 end_time=lesson.end.strftime('%H:%M'),
-                room=lesson.room if lesson.room else languages[get_user_lang(message.chat.id)]["no_room"]
+                room=lesson.room if lesson.room else languages[user_lang]["no_room"]
             )
 
         bot.send_message(message.chat.id, timetable_message)
     else:
-        bot.send_message(message.chat.id, languages[get_user_lang(message.chat.id)]["not_logged_in"])
+        bot.send_message(message.chat.id, languages[user_lang]["not_logged_in"])
 
 def logout_credentials(user_id):
     client_credentials = clients.get(user_id)
@@ -302,10 +313,12 @@ def logout_credentials(user_id):
 
 @bot.message_handler(commands=['logout'])
 def logout(message):
+    user_lang=get_user_lang(message.chat.id)
     if logout_credentials(message.chat.id):
-        bot.send_message(message.chat.id, languages[get_user_lang(message.chat.id)]["logout_successful"])
+        bot.send_message(message.chat.id, languages[user_lang]["logout_successful"])
     else:
-        bot.send_message(message.chat.id, languages[get_user_lang(message.chat.id)]["not_logged_in"])
+        bot.send_message(message.chat.id, languages[user_lang]["not_logged_in"])
 
 if __name__ == '__main__':
+    print("Bot started")
     bot.infinity_polling()
