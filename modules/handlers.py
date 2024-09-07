@@ -63,6 +63,7 @@ def get_grades(message):
     client_credentials = clients.get(message.chat.id)
     if client_credentials:
         client = client_credentials['client']
+        client.session_check()
         grades = client.current_period.grades
 
         if not grades:
@@ -89,6 +90,7 @@ def get_homework(message):
     client_credentials = clients.get(message.chat.id)
     if client_credentials:
         client = client_credentials['client']
+        client.session_check()
         today=datetime.datetime.now().date()
         homework = client.homework(today)
 
@@ -115,6 +117,7 @@ def get_timetable(message):
     client_credentials = clients.get(message.chat.id)
     if client_credentials:
         client = client_credentials['client']
+        client.session_check()
         days=1
         for i in range(10):
             timetable = client.lessons(datetime.datetime.now(), datetime.datetime.now() + datetime.timedelta(days=days))
