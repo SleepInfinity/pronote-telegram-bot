@@ -259,7 +259,8 @@ def get_homework(message):
     client_credentials = clients.get(message.chat.id)
     if client_credentials:
         client = client_credentials['client']
-        homework = client.homework(datetime.datetime.now())
+        today=datetime.datetime.now().date()
+        homework = client.homework(today)
 
         if not homework:
             bot.send_message(message.chat.id, languages[user_lang]["no_homework"])
@@ -270,7 +271,7 @@ def get_homework(message):
             homework_message += languages[user_lang]["homework_entry"].format(
                 subject=hw.subject.name,
                 description=hw.description,
-                due_date=hw.due_date.strftime('%d/%m/%Y'),
+                due_date=hw.date.strftime('%d/%m/%Y'),
                 done=languages[user_lang]["done"] if hw.done else languages[user_lang]["not_done"]
             )
         
