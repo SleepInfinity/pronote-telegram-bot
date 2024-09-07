@@ -19,7 +19,7 @@ db = Client("db.sqlite")
 
 clients = {}
 
-with open('languages.json', 'r') as f:
+with open('languages.json', 'r', encoding='utf-8') as f:
     languages = json.load(f)
 
 TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_TOKEN')
