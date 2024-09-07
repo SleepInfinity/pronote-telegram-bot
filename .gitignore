@@ -1,4 +1,14 @@
+# Ignore all __pycache__ folders
+__pycache__/
+
+# Ignore Python bytecode files
+*.pyc
+*.pyo
+
+# Ignore all database files
 *.sqlite
 *.sqlite-shm
 *.sqlite-wal
+
+# Ignore .env file
 .env
