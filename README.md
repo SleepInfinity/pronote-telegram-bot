@@ -53,8 +53,10 @@ A Python-based Telegram bot that interacts with Pronote to provide students and 
 
    - [vcredist_x64.exe](https://www.microsoft.com/en-us/download/details.aspx?id=40784) if using 64-bit Python.
    - [vcredist_x86.exe](https://www.microsoft.com/en-us/download/details.aspx?id=40784) if using 32-bit Python.
+  
+   If you are not running the bot on Windows just skip this step.
 
-5. **Run the bot:**
+6. **Run the bot:**
 
    ```bash
    python main.py
