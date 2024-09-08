@@ -12,7 +12,7 @@ def setup_user_lang(user_id):
         return True
     languages_keyboard = InlineKeyboardMarkup()
     for language in list(languages.values()):
-        lang_button=InlineKeyboardButton(text=f"{language["name"]} {language["flag"]}", callback_data=f"set_lang_{language["code"]}")
+        lang_button=InlineKeyboardButton(text=f"{language['name']} {language['flag']}", callback_data=f"set_lang_{language['code']}")
         languages_keyboard.row(lang_button)
     
     bot.send_message(user_id, languages["en"]["choose_language"], reply_markup=languages_keyboard)
