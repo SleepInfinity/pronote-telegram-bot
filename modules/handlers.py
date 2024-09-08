@@ -1,6 +1,6 @@
 import datetime
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
-import locale
+from babel.dates import format_date
 from bot_instance import bot
 from modules.auth import handle_login_lyceeconnecte_aquitaine, handle_login_pronote, handle_login_qrcode, logout_credentials
 from modules.database import get_user_lang, set_user_lang, clients
@@ -131,9 +131,8 @@ def get_timetable(message):
             return
 
         user_locale = languages[user_lang]["locale"]
-        locale.setlocale(locale.LC_TIME, user_locale)
 
-        timetable_message = languages[user_lang]["timetable_header"].format(date=timetable[0].start.strftime('%A %d %B'))
+        timetable_message = languages[user_lang]["timetable_header"].format(date=format_date(timetable[0].start, format="EEEE d MMMM", locale=user_locale))
         for lesson in timetable:
             timetable_message += languages[user_lang]["timetable_entry"].format(
                 subject=lesson.subject.name,
