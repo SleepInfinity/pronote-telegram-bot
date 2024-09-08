@@ -1,5 +1,8 @@
 {
   "en": {
+    "name": "English",
+    "code": "en",
+    "flag": "🇺🇸",
     "locale": "en_US.UTF-8",
     "choose_language": "Please choose your language:",
     "language_set": "Language has been set successfully. now send /start",
@@ -36,6 +39,9 @@
     "logout_successful": "You have been logged out successfully."
   },
   "fr": {
+    "name": "Français",
+    "code": "fr",
+    "flag": "🇫🇷",
     "locale": "fr_FR.UTF-8",
     "choose_language": "Veuillez choisir votre langue:",
     "language_set": "La langue a été définie avec succès. Maintenant, envoyez /start",
