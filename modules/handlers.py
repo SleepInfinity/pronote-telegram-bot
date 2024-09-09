@@ -2,6 +2,7 @@ import datetime
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from babel.dates import format_date
 from bot_instance import bot
+from collections import defaultdict
 from modules.auth import handle_login_lyceeconnecte_aquitaine, handle_login_pronote, handle_login_qrcode, logout_credentials
 from modules.database import get_user_lang, set_user_lang, clients
 from modules.language import setup_user_lang, languages
@@ -98,15 +99,26 @@ def get_homework(message):
         if not homeworks:
             bot.send_message(message.chat.id, languages[user_lang]["no_homework"])
             return
+        
+        user_locale = languages[user_lang]["locale"]
+
+        # group homeworks list into sublists of homeworks for each day.
+        grouped_data = defaultdict(list)
+        for homework in homeworks:
+            grouped_data[homework.date].append(homework)
+        grouped_homeworks = list(grouped_data.values())
+
 
         homework_message = languages[user_lang]["homework_header"]
-        for homework in homeworks:
-            homework_message += languages[user_lang]["homework_entry"].format(
-                subject=homework.subject.name,
-                description=homework.description,
-                due_date=homework.date.strftime('%d/%m/%Y'),
-                done=languages[user_lang]["done"] if homework.done else languages[user_lang]["not_done"]
-            )
+        for homeworks in grouped_homeworks:
+            homework_message += languages[user_lang]["homework_for"].format(date=format_date(homeworks[0].date, format="EEEE d MMMM", locale=user_locale))
+
+            for homework in homeworks:
+                homework_message += languages[user_lang]["homework_entry"].format(
+                    subject=homework.subject.name,
+                    description=homework.description,
+                    done=languages[user_lang]["done"] if homework.done else languages[user_lang]["not_done"]
+                )
         
         bot.send_message(message.chat.id, homework_message)
     else:
