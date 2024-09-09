@@ -92,19 +92,20 @@ def get_homework(message):
         client = client_credentials['client']
         client.session_check()
         today=datetime.datetime.now().date()
-        homework = client.homework(today)
+        homeworks = client.homework(today)
+        homeworks.sort(key=lambda homework: homework.date)
 
-        if not homework:
+        if not homeworks:
             bot.send_message(message.chat.id, languages[user_lang]["no_homework"])
             return
 
         homework_message = languages[user_lang]["homework_header"]
-        for hw in homework:
+        for homework in homeworks:
             homework_message += languages[user_lang]["homework_entry"].format(
-                subject=hw.subject.name,
-                description=hw.description,
-                due_date=hw.date.strftime('%d/%m/%Y'),
-                done=languages[user_lang]["done"] if hw.done else languages[user_lang]["not_done"]
+                subject=homework.subject.name,
+                description=homework.description,
+                due_date=homework.date.strftime('%d/%m/%Y'),
+                done=languages[user_lang]["done"] if homework.done else languages[user_lang]["not_done"]
             )
         
         bot.send_message(message.chat.id, homework_message)
