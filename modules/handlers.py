@@ -118,13 +118,10 @@ def get_timetable(message):
     if client_credentials:
         client = client_credentials['client']
         client.session_check()
-        days=1
-        for i in range(10):
-            timetable = client.lessons(datetime.datetime.now(), datetime.datetime.now() + datetime.timedelta(days=days))
-            if not timetable:
-                days+=1
-                continue
-            break
+        
+        timetable=get_today_timetable(client)
+        if not timetable or timetable[-1].start<datetime.datetime.now(): # if timetable is empty or the last lesson of the day is alreay passed
+            timetable=get_next_day_timetable(client)
 
         if not timetable:
             bot.send_message(message.chat.id, languages[user_lang]["no_timetable"])
@@ -145,6 +142,28 @@ def get_timetable(message):
         bot.send_message(message.chat.id, timetable_message)
     else:
         bot.send_message(message.chat.id, languages[user_lang]["not_logged_in"])
+
+def get_today_timetable(client):
+    days=1
+    for i in range(10):
+        timetable = client.lessons(datetime.datetime.now(), datetime.datetime.now() + datetime.timedelta(days=days))
+        if not timetable:
+            days+=1
+            continue
+        break
+    timetable.sort(key=lambda lesson: lesson.start)
+    return timetable
+
+def get_next_day_timetable(client):
+    days=1
+    for i in range(10):
+        timetable = client.lessons(datetime.datetime.now()+datetime.timedelta(days=days), datetime.datetime.now() + datetime.timedelta(days=days+1))
+        if not timetable:
+            days+=1
+            continue
+        break
+    timetable.sort(key=lambda lesson: lesson.start)
+    return timetable
 
 @bot.message_handler(commands=['logout'])
 def logout(message):
