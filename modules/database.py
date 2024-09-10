@@ -20,6 +20,8 @@ def get_user_lesson(user_id, lesson_id):
     return None
 
 def set_user_lesson(user_id, lesson):
-    user_lessons=db.get("user_lessons") or {user_id: {}}
+    user_lessons=db.get("user_lessons") or {}
+    if user_id not in user_lessons:
+        user_lessons[user_id] = {}
     user_lessons[user_id][str(user_id)+"_"+str(lesson.id)]=lesson
     db.set("user_lessons", user_lessons)
