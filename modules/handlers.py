@@ -1,10 +1,11 @@
 import datetime
+import json
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from babel.dates import format_date
 from bot_instance import bot
 from collections import defaultdict
 from modules.auth import handle_login_lyceeconnecte_aquitaine, handle_login_pronote, handle_login_qrcode, logout_credentials
-from modules.database import get_user_lang, set_user_lang, clients
+from modules.database import get_user_lang, set_user_lang, clients, get_user_lesson, set_user_lesson
 from modules.language import setup_user_lang, languages
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith("set_lang_"))
@@ -143,16 +144,17 @@ def get_timetable(message):
         user_locale = languages[user_lang]["locale"]
 
         timetable_message = languages[user_lang]["timetable_header"].format(date=format_date(timetable[0].start, format="EEEE d MMMM", locale=user_locale))
+        timetable_keyboard=InlineKeyboardMarkup()
         for lesson in timetable:
-            timetable_message += languages[user_lang]["timetable_entry"].format(
-                subject=lesson.subject.name,
-                teacher=lesson.teacher_name,
-                start_time=lesson.start.strftime('%H:%M'),
-                end_time=lesson.end.strftime('%H:%M'),
-                room=lesson.classroom if lesson.classroom else languages[user_lang]["no_room"]
+            print(lesson.id)
+            set_user_lesson(user_id=message.chat.id, lesson=lesson)
+            timetable_keyboard.row(
+                InlineKeyboardButton(
+                    text=f"{lesson.subject.name} - {lesson.start.strftime('%H:%M')} - {lesson.classroom if lesson.classroom else lesson.end.strftime('%H:%M')}",
+                    callback_data="lesson_"+str(lesson.id)
+                )
             )
-
-        bot.send_message(message.chat.id, timetable_message)
+        bot.send_message(message.chat.id, timetable_message, reply_markup=timetable_keyboard)
     else:
         bot.send_message(message.chat.id, languages[user_lang]["not_logged_in"])
 
@@ -177,6 +179,20 @@ def get_next_day_timetable(client):
         break
     timetable.sort(key=lambda lesson: lesson.start)
     return timetable
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith("lesson_"))
+def lesson_button_handler(call):
+    user_lang=get_user_lang(call.message.chat.id)
+    lesson_id=call.data.split("lesson_")[1]
+    lesson=get_user_lesson(user_id=call.from_user.id, lesson_id=lesson_id)
+    text=languages[user_lang]["timetable_entry"].format(
+        subject=lesson.subject.name,
+        teacher=lesson.teacher_name,
+        start_time=lesson.start.strftime('%H:%M'),
+        end_time=lesson.end.strftime('%H:%M'),
+        room=lesson.classroom if lesson.classroom else languages[user_lang]["no_room"]
+    )
+    bot.answer_callback_query(callback_query_id=call.id, text=text, show_alert=True)
 
 @bot.message_handler(commands=['logout'])
 def logout(message):
