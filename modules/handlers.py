@@ -146,7 +146,6 @@ def get_timetable(message):
         timetable_message = languages[user_lang]["timetable_header"].format(date=format_date(timetable[0].start, format="EEEE d MMMM", locale=user_locale))
         timetable_keyboard=InlineKeyboardMarkup()
         for lesson in timetable:
-            print(lesson.id)
             set_user_lesson(user_id=message.chat.id, lesson=lesson)
             timetable_keyboard.row(
                 InlineKeyboardButton(
