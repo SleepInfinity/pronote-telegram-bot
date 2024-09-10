@@ -133,7 +133,7 @@ def get_timetable(message):
         client.session_check()
         
         timetable=get_today_timetable(client)
-        if not timetable or timetable[-1].start<datetime.datetime.now(): # if timetable is empty or the last lesson of the day is alreay passed
+        if not timetable or timetable[-1].end<datetime.datetime.now(): # if timetable is empty or the last lesson of the day is alreay passed
             timetable=get_next_day_timetable(client)
 
         if not timetable:
