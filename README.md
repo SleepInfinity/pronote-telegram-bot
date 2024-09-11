@@ -64,6 +64,10 @@ A Python-based Telegram bot that interacts with Pronote to provide students and 
 
 ## Usage
 
+You can either host the bot yourself or use the pre-hosted version available at [t.me/pronote_bot](https://t.me/pronote_bot).
+
+## Commands
+
 Once the bot is running, you can interact with it through Telegram. Use the following commands:
 
 - `/login` - Log in to your Pronote account.
