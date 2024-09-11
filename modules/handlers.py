@@ -200,3 +200,8 @@ def logout(message):
         bot.send_message(message.chat.id, languages[user_lang]["logout_successful"])
     else:
         bot.send_message(message.chat.id, languages[user_lang]["not_logged_in"])
+
+@bot.message_handler(commands=['privacy_policy'])
+def privacy_policy(message):
+    pp_file=open("PRIVACY_POLICY.md", "r").read()
+    bot.reply_to(message, pp_file, parse_mode="MarkDown")
