@@ -1,5 +1,6 @@
+import os
 import datetime
-import json
+import pytz
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from babel.dates import format_date
 from bot_instance import bot
@@ -7,6 +8,10 @@ from collections import defaultdict
 from modules.auth import handle_login_lyceeconnecte_aquitaine, handle_login_pronote, handle_login_qrcode, logout_credentials
 from modules.database import get_user_lang, set_user_lang, clients, get_user_lesson, set_user_lesson
 from modules.language import setup_user_lang, languages
+from dotenv import load_dotenv
+
+load_dotenv()
+timezone = pytz.timezone(os.getenv('TIMEZONE') or "UTC")
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith("set_lang_"))
 def setup_user_lang_query_handler(call):
@@ -93,7 +98,7 @@ def get_homework(message):
     if client_credentials:
         client = client_credentials['client']
         client.session_check()
-        today=datetime.datetime.now().date()
+        today=datetime.datetime.now(timezone).date()
         homeworks = client.homework(today)
         homeworks.sort(key=lambda homework: homework.date)
 
@@ -134,7 +139,7 @@ def get_timetable(message):
         client.session_check()
         
         timetable=get_today_timetable(client)
-        if not timetable or timetable[-1].end<datetime.datetime.now(): # if timetable is empty or the last lesson of the day is alreay passed
+        if not timetable or timezone.localize(timetable[-1].end)<datetime.datetime.now(timezone): # if timetable is empty or the last lesson of the day is alreay passed
             timetable=get_next_day_timetable(client)
 
         if not timetable:
@@ -160,7 +165,7 @@ def get_timetable(message):
 def get_today_timetable(client):
     days=1
     for i in range(10):
-        timetable = client.lessons(datetime.datetime.now(), datetime.datetime.now() + datetime.timedelta(days=days))
+        timetable = client.lessons(datetime.datetime.now(timezone), datetime.datetime.now(timezone) + datetime.timedelta(days=days))
         if not timetable:
             days+=1
             continue
@@ -171,7 +176,7 @@ def get_today_timetable(client):
 def get_next_day_timetable(client):
     days=1
     for i in range(10):
-        timetable = client.lessons(datetime.datetime.now()+datetime.timedelta(days=days), datetime.datetime.now() + datetime.timedelta(days=days+1))
+        timetable = client.lessons(datetime.datetime.now(timezone)+datetime.timedelta(days=days), datetime.datetime.now(timezone) + datetime.timedelta(days=days+1))
         if not timetable:
             days+=1
             continue
