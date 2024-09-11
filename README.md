@@ -42,10 +42,14 @@ A Python-based Telegram bot that interacts with Pronote to provide students and 
 
    ```env
    TELEGRAM_TOKEN=your_telegram_bot_token
+   TIMEZONE=your_timezone
    ```
 
    Replace `your_telegram_bot_token` with your actual Telegram bot token.
    If you don't know how to get the bot token you can take a look at [obtain-your-bot-token](https://core.telegram.org/bots/tutorial#obtain-your-bot-token)
+
+   Replace `your_timezone` with your actual location's timezone, default to `UTC`, for france use `Europe/Paris`.
+   [Here](https://gist.githubusercontent.com/heyalexej/8bf688fd67d7199be4a1682b3eec7568/raw/daacf0e4496ccc60a36e493f0252b7988bceb143/pytz-time-zones.py) is a list of all supported timezones.
 
 4. **Windows Users:**
 
