@@ -4,4 +4,5 @@ Pillow==10.4.0
 pronotepy==2.13.1
 pyTelegramBotAPI==4.22.1
 python-dotenv==1.0.1
+pytz==2024.2
 pyzbar==0.1.9
