@@ -1,5 +1,6 @@
 # Ignore all __pycache__ folders
 __pycache__/
+tests/
 
 # Ignore Python bytecode files
 *.pyc
@@ -12,5 +13,3 @@ __pycache__/
 
 # Ignore .env file
 .env
-
-tests/
