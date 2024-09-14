@@ -9,6 +9,7 @@ from modules.auth import handle_login_lyceeconnecte_aquitaine, handle_login_pron
 from modules.database import get_user_lang, set_user_lang, clients, get_user_lesson, set_user_lesson
 from modules.language import setup_user_lang, languages
 from dotenv import load_dotenv
+from modules.notifications import enable_notifications, disable_notifications
 
 load_dotenv()
 timezone = pytz.timezone(os.getenv('TIMEZONE') or "UTC")
@@ -26,6 +27,10 @@ def setup_user_lang_query_handler(call):
 
 @bot.message_handler(commands=['start'])
 def start(message):
+    try:
+        clients[message.chat.id]
+    except KeyError:
+        clients[message.chat.id]={}
     if not setup_user_lang(message.chat.id):
         return
     user_lang=get_user_lang(message.chat.id)
@@ -184,6 +189,14 @@ def get_next_day_timetable(client):
     timetable.sort(key=lambda lesson: lesson.start)
     return timetable
 
+@bot.message_handler(commands=['enable_notifications'])
+def enable_notifications_command(message):
+    enable_notifications(message)
+
+@bot.message_handler(commands=['disable_notifications'])
+def disable_notifications_command(message):
+    disable_notifications(message)
+
 @bot.callback_query_handler(func=lambda call: call.data.startswith("lesson_"))
 def lesson_button_handler(call):
     user_lang=get_user_lang(call.message.chat.id)
@@ -210,3 +223,4 @@ def logout(message):
 def privacy_policy(message):
     pp_file=open("PRIVACY_POLICY.md", "r").read()
     bot.reply_to(message, pp_file, parse_mode="MarkDown")
+
