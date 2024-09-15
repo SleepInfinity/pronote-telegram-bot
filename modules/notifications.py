@@ -17,10 +17,7 @@ def enable_notifications(message):
         bot.send_message(chat_id, languages[user_lang]["not_logged_in"])
         return
 
-    try:
-        clients[chat_id]["notifications"]['notifications_enabled']
-    except KeyError:
-        initialize_notifications(message, client)
+    initialize_notifications(message, client)
     
     notifications_settings=clients[chat_id]["notifications"]
 
@@ -44,10 +41,8 @@ def disable_notifications(message):
     else:
         bot.send_message(chat_id, languages[user_lang]["not_logged_in"])
         return
-    try:
-        clients[chat_id]["notifications"]['notifications_enabled']
-    except KeyError:
-        initialize_notifications(message, client)
+    
+    initialize_notifications(message, client)
 
     notifications_settings=clients[chat_id]["notifications"]
 
@@ -60,9 +55,20 @@ def disable_notifications(message):
         bot.reply_to(message, "Notifications have been disabled.")
         stop_user_thread(chat_id)
 
+def is_notifications_initialized(chat_id):
+    try:
+        clients[chat_id]["notifications"]['notifications_enabled']
+        return True
+    except KeyError:
+        return False
+
+
 def initialize_notifications(message, client):
+    chat_id=message.chat.id
+    if is_notifications_initialized(chat_id):
+        return
     grades=get_grades(client)
-    known_grades=set(grade for grade in grades)
+    known_grades=set(grade.id for grade in grades[:35])
     stop_event=threading.Event()
     with user_data_lock:
         clients[message.chat.id]["notifications"]={
@@ -122,7 +128,7 @@ def check_for_new_grades(chat_id, stop_event):
             try:
                 # Fetch the current grades
                 grades = client.current_period.grades
-                current_grades = set(grade for grade in grades)
+                current_grades = set(grade.id for grade in grades)
 
                 # Find new grades
                 new_grades = current_grades - known_grades
@@ -130,8 +136,7 @@ def check_for_new_grades(chat_id, stop_event):
                 if new_grades:
                     # Update known grades
                     known_grades.update(new_grades)
-                    with user_data_lock:
-                        user_settings['known_grades'] = known_grades
+                    user_settings['known_grades'] = known_grades
 
                     # Send notifications for new grades
                     for grade in grades:
@@ -144,6 +149,7 @@ def check_for_new_grades(chat_id, stop_event):
                                 f"**Comment:** {grade.comment if grade.comment else languages[user_lang]['no_comment']}"
                             )
                             bot.send_message(chat_id, message, parse_mode='Markdown')
+                    
                 else:
                     print("No new grades")
             except Exception as e:
