@@ -68,7 +68,7 @@ def initialize_notifications(message, client):
     if is_notifications_initialized(chat_id):
         return
     grades=get_grades(client)
-    known_grades=set(grade.id for grade in grades[:35])
+    known_grades=set(grade.id for grade in grades)
     stop_event=threading.Event()
     with user_data_lock:
         clients[message.chat.id]["notifications"]={
