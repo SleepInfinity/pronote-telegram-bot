@@ -22,12 +22,12 @@ def enable_notifications(message):
     notifications_settings=clients[chat_id]["notifications"]
 
     if notifications_settings["notifications_enabled"]:
-        bot.reply_to(message, "Notifications are already enabled.")
+        bot.reply_to(message, languages[user_lang]["notifications_already_enabled"])
         return
 
     with user_data_lock:
         notifications_settings['notifications_enabled'] = True
-        bot.reply_to(message, "Notifications have been enabled.")
+        bot.reply_to(message, languages[user_lang]["notifications_enabled"])
         # Restart the user's thread if it's not running
         if notifications_settings['thread'] is None:
             start_user_thread(chat_id)
@@ -47,12 +47,12 @@ def disable_notifications(message):
     notifications_settings=clients[chat_id]["notifications"]
 
     if not notifications_settings["notifications_enabled"]:
-        bot.reply_to(message, "Notifications are already disabled.")
+        bot.reply_to(message, languages[user_lang]["notifications_already_disabled"])
         return
 
     with user_data_lock:
         notifications_settings['notifications_enabled'] = False
-        bot.reply_to(message, "Notifications have been disabled.")
+        bot.reply_to(message, languages[user_lang]["notifications_disabled"])
         stop_user_thread(chat_id)
 
 def is_notifications_initialized(chat_id):

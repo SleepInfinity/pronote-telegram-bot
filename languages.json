@@ -37,7 +37,11 @@
     "timetable_header": "Here is your timetable for {date}:\n\n",
     "timetable_entry": "Subject: {subject}\nTeacher: {teacher}\nStart Time: {start_time}\nEnd Time: {end_time}\nRoom: {room}\n\n",
     "no_room": "No room assigned.",
-    "logout_successful": "You have been logged out successfully."
+    "logout_successful": "You have been logged out successfully.",
+    "notifications_already_enabled": "Notifications are already enabled.",
+    "notifications_enabled": "Notifications have been enabled.",
+    "notifications_already_disabled": "Notifications are already disabled.",
+    "notifications_disabled": "Notifications have been disabled."
   },
   "fr": {
     "name": "Français",
@@ -77,7 +81,11 @@
     "timetable_header": "Voici votre emploi du temps pour le {date} :\n\n",
     "timetable_entry": "Matière : {subject}\nProfesseur : {teacher}\nHeure de début : {start_time}\nHeure de fin : {end_time}\nSalle : {room}\n\n",
     "no_room": "Aucune salle assignée.",
-    "logout_successful": "Vous avez été déconnecté avec succès."
+    "logout_successful": "Vous avez été déconnecté avec succès.",
+    "notifications_already_enabled": "Les notifications sont déjà activées.",
+    "notifications_enabled": "Les notifications ont été activées.",
+    "notifications_already_disabled": "Les notifications sont déjà désactivées.",
+    "notifications_disabled": "Les notifications ont été désactivées."
   },
   "ar": {
     "name": "العربية",
@@ -117,7 +125,11 @@
     "timetable_header": "إليك جدول حصصك ليوم {date}:\n\n",
     "timetable_entry": "المادة: {subject}\nالمعلم: {teacher}\nوقت البدء: {start_time}\nوقت الانتهاء: {end_time}\nالغرفة: {room}\n\n",
     "no_room": "لم يتم تعيين غرفة.",
-    "logout_successful": "تم تسجيل الخروج بنجاح."
+    "logout_successful": "تم تسجيل الخروج بنجاح.",
+    "notifications_already_enabled": "لقد تم تفعيل الإشعارات بالفعل.",
+    "notifications_enabled": "تم تفعيل الإشعارات.",
+    "notifications_already_disabled": "لقد تم تعطيل الإشعارات بالفعل.",
+    "notifications_disabled": "تم تعطيل الإشعارات."
   },
   "de": {
     "name": "Deutsch",
@@ -157,6 +169,10 @@
     "timetable_header": "Hier ist Ihr Stundenplan für {date}:\n\n",
     "timetable_entry": "Fach: {subject}\nLehrer: {teacher}\nBeginn: {start_time}\nEnde: {end_time}\nRaum: {room}\n\n",
     "no_room": "Kein Raum zugewiesen.",
-    "logout_successful": "Sie wurden erfolgreich abgemeldet."
+    "logout_successful": "Sie wurden erfolgreich abgemeldet.",
+    "notifications_already_enabled": "Benachrichtigungen sind bereits aktiviert.",
+    "notifications_enabled": "Benachrichtigungen wurden aktiviert.",
+    "notifications_already_disabled": "Benachrichtigungen sind bereits deaktiviert.",
+    "notifications_disabled": "Benachrichtigungen wurden deaktiviert."
   }
 }
