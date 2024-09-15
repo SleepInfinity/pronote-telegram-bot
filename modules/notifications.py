@@ -67,7 +67,7 @@ def initialize_notifications(message, client):
     with user_data_lock:
         clients[message.chat.id]["notifications"]={
             'known_grades': known_grades,
-            'notifications_enabled': True,
+            'notifications_enabled': False,
             'interval': 300,
             'stop_event': stop_event,
             'thread': None
