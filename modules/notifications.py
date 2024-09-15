@@ -141,12 +141,12 @@ def check_for_new_grades(chat_id, stop_event):
                     # Send notifications for new grades
                     for grade in grades:
                         if grade.id in new_grades:
-                            message = (
-                                f"📢 **New Grade Received!**\n"
-                                f"**Subject:** {grade.subject.name}\n"
-                                f"**Grade:** {grade.grade}/{grade.out_of}\n"
-                                f"**Date:** {grade.date.strftime('%Y-%m-%d')}\n"
-                                f"**Comment:** {grade.comment if grade.comment else languages[user_lang]['no_comment']}"
+                            message=languages[user_lang]["new_grade_notification"].format(
+                                subject=grade.subject.name,
+                                grade=grade.grade,
+                                out_of=grade.out_of,
+                                date=grade.date.strftime('%Y-%m-%d'),
+                                comment=grade.comment if grade.comment else languages[user_lang]['no_comment']
                             )
                             bot.send_message(chat_id, message, parse_mode='Markdown')
                     

@@ -41,7 +41,8 @@
     "notifications_already_enabled": "Notifications are already enabled.",
     "notifications_enabled": "Notifications have been enabled.",
     "notifications_already_disabled": "Notifications are already disabled.",
-    "notifications_disabled": "Notifications have been disabled."
+    "notifications_disabled": "Notifications have been disabled.",
+    "new_grade_notification": "📢 New Grade In {subject}\nGrade: {grade}/{out_of}\nDate: {date}\nComment: {comment}"
   },
   "fr": {
     "name": "Français",
@@ -85,7 +86,8 @@
     "notifications_already_enabled": "Les notifications sont déjà activées.",
     "notifications_enabled": "Les notifications ont été activées.",
     "notifications_already_disabled": "Les notifications sont déjà désactivées.",
-    "notifications_disabled": "Les notifications ont été désactivées."
+    "notifications_disabled": "Les notifications ont été désactivées.",
+    "new_grade_notification": "📢 Nouvelle note en {subject}\nNote : {grade}/{out_of}\nDate : {date}\nCommentaire : {comment}"
   },
   "ar": {
     "name": "العربية",
@@ -129,7 +131,8 @@
     "notifications_already_enabled": "لقد تم تفعيل الإشعارات بالفعل.",
     "notifications_enabled": "تم تفعيل الإشعارات.",
     "notifications_already_disabled": "لقد تم تعطيل الإشعارات بالفعل.",
-    "notifications_disabled": "تم تعطيل الإشعارات."
+    "notifications_disabled": "تم تعطيل الإشعارات.",
+    "new_grade_notification": "📢 درجة جديدة في {subject}\nالدرجة: {grade}/{out_of}\nالتاريخ: {date}\nالتعليق: {comment}"
   },
   "de": {
     "name": "Deutsch",
@@ -173,6 +176,7 @@
     "notifications_already_enabled": "Benachrichtigungen sind bereits aktiviert.",
     "notifications_enabled": "Benachrichtigungen wurden aktiviert.",
     "notifications_already_disabled": "Benachrichtigungen sind bereits deaktiviert.",
-    "notifications_disabled": "Benachrichtigungen wurden deaktiviert."
+    "notifications_disabled": "Benachrichtigungen wurden deaktiviert.",
+    "new_grade_notification": "📢 Neue Note in {subject}\nNote: {grade}/{out_of}\nDatum: {date}\nKommentar: {comment}"
   }
 }
