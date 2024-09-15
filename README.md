@@ -79,6 +79,8 @@ Once the bot is running, you can interact with it through Telegram. Use the foll
 - `/homework` - Check your upcoming homework assignments (after logging in).
 - `/timetable` - View your next day's timetable (after logging in).
 - `/logout` - Log out from your Pronote account.
+- `/enable_notifications` - Enable notifications for new grades (new homework comming soon).
+- `/disable_notifications` - Disable notifications for new grades.
 
 ## To-Do List
 
