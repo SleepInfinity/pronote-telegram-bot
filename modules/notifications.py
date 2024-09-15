@@ -141,7 +141,7 @@ def check_for_new_grades(chat_id, stop_event):
                                 f"**Subject:** {grade.subject.name}\n"
                                 f"**Grade:** {grade.grade}/{grade.out_of}\n"
                                 f"**Date:** {grade.date.strftime('%Y-%m-%d')}\n"
-                                f"**Comment:** {grade.comment if grade.comment else languages[user_lang]["no_comment"]}"
+                                f"**Comment:** {grade.comment if grade.comment else languages[user_lang]['no_comment']}"
                             )
                             bot.send_message(chat_id, message, parse_mode='Markdown')
                 else:
