@@ -24,6 +24,10 @@ def enable_notifications(message):
     
     notifications_settings=clients[chat_id]["notifications"]
 
+    if notifications_settings["notifications_enabled"]:
+        bot.reply_to(message, "Notifications are already enabled.")
+        return
+
     with user_data_lock:
         notifications_settings['notifications_enabled'] = True
         bot.reply_to(message, "Notifications have been enabled.")
@@ -47,8 +51,12 @@ def disable_notifications(message):
 
     notifications_settings=clients[chat_id]["notifications"]
 
+    if not notifications_settings["notifications_enabled"]:
+        bot.reply_to(message, "Notifications are already disabled.")
+        return
+
     with user_data_lock:
-        notifications_settings['notifications_enabled'] = True
+        notifications_settings['notifications_enabled'] = False
         bot.reply_to(message, "Notifications have been disabled.")
         stop_user_thread(chat_id)
 
@@ -100,7 +108,7 @@ def check_for_new_grades(chat_id, stop_event):
                 client = client_credentials['client']
             else:
                 bot.send_message(chat_id, languages[user_lang]["not_logged_in"])
-                return
+                break
         
             user_settings = client_credentials["notifications"]
             if not user_settings:
@@ -114,10 +122,10 @@ def check_for_new_grades(chat_id, stop_event):
             try:
                 # Fetch the current grades
                 grades = client.current_period.grades
-                current_grade_ids = set(grade.id for grade in grades)
+                current_grades = set(grade for grade in grades)
 
                 # Find new grades
-                new_grades = current_grade_ids - known_grades
+                new_grades = current_grades - known_grades
 
                 if new_grades:
                     # Update known grades
@@ -131,9 +139,9 @@ def check_for_new_grades(chat_id, stop_event):
                             message = (
                                 f"📢 **New Grade Received!**\n"
                                 f"**Subject:** {grade.subject.name}\n"
-                                f"**Grade:** {grade.grade}\n"
-                                f"**Date:** {grade.entry_date.strftime('%Y-%m-%d')}\n"
-                                f"**Teacher:** {grade.teacher_name}"
+                                f"**Grade:** {grade.grade}/{grade.out_of}\n"
+                                f"**Date:** {grade.date.strftime('%Y-%m-%d')}\n"
+                                f"**Comment:** {grade.comment if grade.comment else languages[user_lang]["no_comment"]}"
                             )
                             bot.send_message(chat_id, message, parse_mode='Markdown')
                 else:
