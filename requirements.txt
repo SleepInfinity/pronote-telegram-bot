@@ -6,3 +6,4 @@ pyTelegramBotAPI==4.22.1
 python-dotenv==1.0.1
 pytz==2024.2
 pyzbar==0.1.9
+rich==13.8.1

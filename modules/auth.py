@@ -8,7 +8,7 @@ from modules.database import get_user_lang, clients
 from modules.language import languages
 from pyzbar.pyzbar import decode
 from PIL import Image
-
+from rich import print
 
 def handle_login_qrcode(call):
     user_lang=get_user_lang(call.message.chat.id)

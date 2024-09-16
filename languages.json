@@ -42,7 +42,8 @@
     "notifications_enabled": "Notifications have been enabled.",
     "notifications_already_disabled": "Notifications are already disabled.",
     "notifications_disabled": "Notifications have been disabled.",
-    "new_grade_notification": "📢 New Grade In {subject}\nGrade: {grade}/{out_of}\nDate: {date}\nComment: {comment}"
+    "new_grade_notification": "📢📊 New Grade In {subject}\nGrade: {grade}/{out_of}\nDate: {date}\nComment: {comment}",
+    "new_homework_notification": "📢📝 New Homework in {subject}\nTo do for {date}\nDescription: {description}"
   },
   "fr": {
     "name": "Français",
@@ -87,7 +88,8 @@
     "notifications_enabled": "Les notifications ont été activées.",
     "notifications_already_disabled": "Les notifications sont déjà désactivées.",
     "notifications_disabled": "Les notifications ont été désactivées.",
-    "new_grade_notification": "📢 Nouvelle note en {subject}\nNote : {grade}/{out_of}\nDate : {date}\nCommentaire : {comment}"
+    "new_grade_notification": "📢📊 Nouvelle note en {subject}\nNote : {grade}/{out_of}\nDate : {date}\nCommentaire : {comment}",
+    "new_homework_notification": "📢📝 Nouveau devoir en {subject}\nA faire pour le {date}\nDescription : {description}"
   },
   "ar": {
     "name": "العربية",
@@ -132,7 +134,8 @@
     "notifications_enabled": "تم تفعيل الإشعارات.",
     "notifications_already_disabled": "لقد تم تعطيل الإشعارات بالفعل.",
     "notifications_disabled": "تم تعطيل الإشعارات.",
-    "new_grade_notification": "📢 درجة جديدة في {subject}\nالدرجة: {grade}/{out_of}\nالتاريخ: {date}\nالتعليق: {comment}"
+    "new_grade_notification": "📢📊 درجة جديدة في {subject}\nالدرجة: {grade}/{out_of}\nالتاريخ: {date}\nالتعليق: {comment}",
+    "new_homework_notification": "📢📝 واجب منزلي جديد في {subject}\nيجب القيام به ليوم {date}\nالوصف: {description}"
   },
   "de": {
     "name": "Deutsch",
@@ -177,6 +180,7 @@
     "notifications_enabled": "Benachrichtigungen wurden aktiviert.",
     "notifications_already_disabled": "Benachrichtigungen sind bereits deaktiviert.",
     "notifications_disabled": "Benachrichtigungen wurden deaktiviert.",
-    "new_grade_notification": "📢 Neue Note in {subject}\nNote: {grade}/{out_of}\nDatum: {date}\nKommentar: {comment}"
+    "new_grade_notification": "📢📊 Neue Note in {subject}\nNote: {grade}/{out_of}\nDatum: {date}\nKommentar: {comment}",
+    "new_homework_notification": "📢📝 Neue Hausaufgaben im Fach {subject}\nZu erledigen für {date}\nBeschreibung: {description}"
   }
 }
