@@ -9,11 +9,12 @@ A Python-based Telegram bot that interacts with Pronote to provide students and 
 - **View Grades:** Get your latest grades directly in Telegram.
 - **Check Homework:** Receive a list of upcoming homework assignments.
 - **View Timetable:** Access your next day's schedule.
+- **Notifications:** Automatic notifications for new grades, upcoming homework, and other important updates.
+- **Multi-language Support:** English, French and more.
 
 ### Upcoming Features
 
-- **Notifications:** Automatic notifications for new grades, upcoming deadlines, and other important updates.
-- **Multi-language Support:** English and French, with more languages to be added.
+- **Extend features:** to include additional Pronote functionalities.
 
 ## Requirements
 
@@ -43,13 +44,16 @@ A Python-based Telegram bot that interacts with Pronote to provide students and 
    ```env
    TELEGRAM_TOKEN=your_telegram_bot_token
    TIMEZONE=your_timezone
+   POLLING_INTERVAL=300  # default to 5 minutes (300 seconds)
    ```
 
-   Replace `your_telegram_bot_token` with your actual Telegram bot token.
+   - Replace `your_telegram_bot_token` with your actual Telegram bot token.
    If you don't know how to get the bot token you can take a look at [obtain-your-bot-token](https://core.telegram.org/bots/tutorial#obtain-your-bot-token)
 
-   Replace `your_timezone` with your actual location's timezone, default to `UTC`, for france use `Europe/Paris`.
+   - Replace `your_timezone` with your actual location's timezone, default to `UTC`, for france use `Europe/Paris`.
    [Here](https://gist.githubusercontent.com/heyalexej/8bf688fd67d7199be4a1682b3eec7568/raw/daacf0e4496ccc60a36e493f0252b7988bceb143/pytz-time-zones.py) is a list of all supported timezones.
+
+   - The `POLLING_INTERVAL` defines the time interval in seconds for polling the Pronote API for new notifications, with a default value of 300 seconds (5 minutes).
 
 4. **Windows Users:**
 
@@ -78,13 +82,13 @@ Once the bot is running, you can interact with it through Telegram. Use the foll
 - `/grades` - View your latest grades (after logging in).
 - `/homework` - Check your upcoming homework assignments (after logging in).
 - `/timetable` - View your next day's timetable (after logging in).
+- `/enable_notifications` - Enable notifications, which will poll Pronote every 5 minutes (configurable via the `POLLING_INTERVAL` environment variable) for updates on new grades or homework.
+- `/disable_notifications` - Disable notifications for new grades and homework.
 - `/logout` - Log out from your Pronote account.
-- `/enable_notifications` - Enable notifications for new grades (new homework comming soon).
-- `/disable_notifications` - Disable notifications for new grades.
 
 ## To-Do List
 
-- [ ] Add notifications for grades, homework, and schedules.
+- [x] Add notifications for grades, homework, and schedules.
 - [x] Implement multi-language support (English, French, and more).
 - [ ] Extend features to include additional Pronote functionalities.
 - [ ] Clean up the code and spread it into multiple files for more readability and scalability.
