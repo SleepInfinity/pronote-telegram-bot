@@ -1,5 +1,7 @@
 # Pronote Telegram Bot
 
+*This README is also available in [French](README_fr.md).*
+
 A Python-based Telegram bot that interacts with Pronote to provide students and parents with easy access to school information such as grades, homework, and timetables.
 
 **This bot is currently under development and may contain bugs.**
@@ -64,7 +66,7 @@ A Python-based Telegram bot that interacts with Pronote to provide students and 
   
    If you are not running the bot on Windows just skip this step.
 
-6. **Run the bot:**
+5. **Run the bot:**
 
    ```bash
    python main.py
