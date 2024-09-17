@@ -8,7 +8,7 @@ from modules.database import get_user_lang, clients
 from modules.language import languages
 from pyzbar.pyzbar import decode
 from PIL import Image
-from rich import print
+from utils.logger import logger
 
 def handle_login_qrcode(call):
     user_lang=get_user_lang(call.message.chat.id)
@@ -98,7 +98,7 @@ def process_login_pronote(message):
             bot.send_message(message.chat.id, languages[user_lang]["login_failed"])
     except Exception as e:
         bot.send_message(message.chat.id, languages[user_lang]["error_logging_in"])
-        print(e)
+        logger.error(f"Error while logging in with pronote: {str(e)}")
 
 def handle_login_lyceeconnecte_aquitaine(call):
     user_lang=get_user_lang(call.message.chat.id)
@@ -137,7 +137,7 @@ def process_login_lyceeconnecte_aquitaine(message):
             bot.send_message(message.chat.id, languages[user_lang]["login_failed"])
     except Exception as e:
         bot.send_message(message.chat.id, languages[user_lang]["error_logging_in"])
-        print(e)
+        logger.error(f"Error while logging in with lyceeconnecte: {str(e)}")
 
 def logout_credentials(user_id):
     client_credentials = clients.get(user_id)

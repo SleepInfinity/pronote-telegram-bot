@@ -9,7 +9,7 @@ from bot_instance import bot
 from modules.language import languages
 from dotenv import load_dotenv
 from modules.database import get_user_lang, clients
-from rich import print
+from utils.logger import logger
 
 user_data_lock = threading.Lock()
 load_dotenv()
@@ -122,7 +122,7 @@ def stop_user_thread(chat_id):
         user_settings['stop_event'] = threading.Event()
 
 def check_for_new_grades(chat_id, client, known_grades, user_settings):
-    print("Checking for new grades")
+    logger.debug("Checking for new grades")
     # Fetch the current grades
     grades = get_grades(client)
     current_grades = set(grade.id for grade in grades)
@@ -140,10 +140,10 @@ def check_for_new_grades(chat_id, client, known_grades, user_settings):
             if grade.id in new_grades:
                 send_grade_notification(grade, chat_id)      
     else:
-        print("No new grades")
+        logger.info("No new grades")
 
 def check_for_new_homework(chat_id, client, known_homework, user_settings):
-    print("Checking for new homework")
+    logger.debug("Checking for new homework")
     homework=get_homework(client)
     current_homework=set(hw.id for hw in homework)
 
@@ -157,7 +157,7 @@ def check_for_new_homework(chat_id, client, known_homework, user_settings):
             if hw.id in new_homework:
                 send_homework_notification(hw, chat_id)
     else:
-        print("No new homework")
+        logger.info("No new homework")
 
 def send_grade_notification(grade, chat_id):
     user_lang=get_user_lang(chat_id)
@@ -212,7 +212,7 @@ def check_for_new_notifications(chat_id, stop_event):
                 check_for_new_grades(chat_id, client, known_grades, user_settings)
                 check_for_new_homework(chat_id, client, known_homework, user_settings)
             except Exception as e:
-                print(f"An error occurred for chat_id {chat_id}: {e}")
+                logger.error(f"An error occurred for chat_id {chat_id}: {e}")
         else:
             # exit the thread as the notifications are disabled.
             stop_user_thread(chat_id)
@@ -221,4 +221,4 @@ def check_for_new_notifications(chat_id, stop_event):
         # Sleep for the user's specified interval or until stop_event is set
         stop_event.wait(timeout=interval)
 
-    print(f"Thread for chat_id {chat_id} has been stopped.")
+    logger.info(f"Thread for chat_id {chat_id} has been stopped.")

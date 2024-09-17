@@ -1,7 +1,7 @@
 from bot_instance import bot
 from modules import database, language, handlers
-from rich import print
+from utils.logger import logger
 
 if __name__ == '__main__':
-    print("Bot started")
+    logger.info("Bot started")
     bot.infinity_polling()
