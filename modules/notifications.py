@@ -16,16 +16,21 @@ load_dotenv()
 timezone = pytz.timezone(os.getenv('TIMEZONE') or "UTC")
 polling_interval=int(os.getenv('POLLING_INTERVAL')) or 300
 
-def enable_notifications(message):
-    chat_id=message.chat.id
+def get_client(chat_id):
     user_lang=get_user_lang(chat_id)
     client_credentials = clients.get(chat_id)
     if client_credentials:
         client = client_credentials['client']
-    else:
-        bot.send_message(chat_id, languages[user_lang]["not_logged_in"])
-        return
+        return client
+    bot.send_message(chat_id, languages[user_lang]["not_logged_in"])
 
+def enable_notifications(message):
+    chat_id=message.chat.id
+    user_lang=get_user_lang(chat_id)
+    client=get_client(chat_id)
+    if not client:
+        return
+    
     initialize_notifications(message, client)
     
     notifications_settings=clients[chat_id]["notifications"]
@@ -44,11 +49,8 @@ def enable_notifications(message):
 def disable_notifications(message):
     chat_id=message.chat.id
     user_lang=get_user_lang(chat_id)
-    client_credentials = clients.get(chat_id)
-    if client_credentials:
-        client = client_credentials['client']
-    else:
-        bot.send_message(chat_id, languages[user_lang]["not_logged_in"])
+    client=get_client(chat_id)
+    if not client:
         return
     
     initialize_notifications(message, client)
@@ -185,14 +187,11 @@ def send_homework_notification(homework, chat_id):
     bot.send_message(chat_id, message, parse_mode='Markdown')
 
 def check_for_new_notifications(chat_id, stop_event):
-    user_lang=get_user_lang(chat_id)
     while not stop_event.is_set():
         with user_data_lock:
             client_credentials = clients.get(chat_id)
-            if client_credentials:
-                client = client_credentials['client']
-            else:
-                bot.send_message(chat_id, languages[user_lang]["not_logged_in"])
+            client=get_client(chat_id)
+            if not client:
                 stop_user_thread(chat_id)
                 break
         
