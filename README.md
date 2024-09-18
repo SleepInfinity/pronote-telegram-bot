@@ -86,6 +86,7 @@ Once the bot is running, you can interact with it through Telegram. Use the foll
 - `/timetable` - View your next day's timetable (after logging in).
 - `/enable_notifications` - Enable notifications, which will poll Pronote every 5 minutes (configurable via the `POLLING_INTERVAL` environment variable) for updates on new grades or homework.
 - `/disable_notifications` - Disable notifications for new grades and homework.
+- `/settings` - Bot's Settings.
 - `/logout` - Log out from your Pronote account.
 
 ## To-Do List

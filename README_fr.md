@@ -86,6 +86,7 @@ Une fois le bot en fonctionnement, vous pouvez interagir avec lui via Telegram e
 - `/timetable` - Voir l'emploi du temps du lendemain (après connexion).
 - `/enable_notifications` - Activer les notifications, le bot interrogera Pronote toutes les 5 minutes (configurable via la variable d'environnement `POLLING_INTERVAL`) pour les mises à jour des nouvelles notes ou devoirs.
 - `/disable_notifications` - Désactiver les notifications pour les nouvelles notes et devoirs.
+- `/settings` - Paramètres du bot.
 - `/logout` - Se déconnecter de votre compte Pronote.
 
 ## Liste des tâches
