@@ -14,7 +14,7 @@ from utils.logger import logger
 user_data_lock = threading.Lock()
 load_dotenv()
 timezone = pytz.timezone(os.getenv('TIMEZONE') or "UTC")
-polling_interval=int(os.getenv('POLLING_INTERVAL')) or 300
+polling_interval=int(os.getenv('POLLING_INTERVAL') or 300)
 
 def get_client(chat_id):
     user_lang=get_user_lang(chat_id)

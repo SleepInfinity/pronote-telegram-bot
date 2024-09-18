@@ -9,6 +9,8 @@ from modules.auth import handle_login_lyceeconnecte_aquitaine, handle_login_pron
 from modules.database import get_user_lang, set_user_lang, clients, get_user_lesson, set_user_lesson
 from modules.language import setup_user_lang, languages
 from dotenv import load_dotenv
+from modules.settings import settings_message
+from modules.language import change_user_lang
 from modules.notifications import enable_notifications, disable_notifications
 
 load_dotenv()
@@ -210,6 +212,17 @@ def lesson_button_handler(call):
         room=lesson.classroom if lesson.classroom else languages[user_lang]["no_room"]
     )
     bot.answer_callback_query(callback_query_id=call.id, text=text, show_alert=True)
+
+@bot.message_handler(commands=['settings'])
+def settings_command(message):
+    settings_message(message)
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith("settings_"))
+def setting_callback_handler(call):
+    setting=call.data.split("settings_")[1]
+    if setting=="set_language":
+        change_user_lang(call.message)
+
 
 @bot.message_handler(commands=['logout'])
 def logout(message):
