@@ -1,8 +1,8 @@
 import os
-import telebot
+from tgram import TgBot
 from dotenv import load_dotenv
 
 load_dotenv()
 
 TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_TOKEN')
-bot = telebot.TeleBot(TELEGRAM_BOT_TOKEN)
+bot = TgBot(TELEGRAM_BOT_TOKEN)
