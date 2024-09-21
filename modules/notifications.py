@@ -194,7 +194,8 @@ def check_for_new_notifications(chat_id, stop_event):
             if not client:
                 stop_user_thread(chat_id)
                 break
-        
+            client.session_check()
+
             user_settings = client_credentials["notifications"]
             if not user_settings:
                 # User data no longer exists, exit the thread
