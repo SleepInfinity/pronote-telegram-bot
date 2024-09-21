@@ -25,13 +25,9 @@ timezone = pytz.timezone(os.getenv('TIMEZONE') or "UTC")
 @bot.on_callback_query(filters.private & filters.regex(r"^set\_lang\_"))
 async def setup_user_lang_query_handler(bot: TgBot, call: CallbackQuery):
     lang = call.data.split("set_lang_")[1]
-    set_user_lang(call.message.chat.id, lang)
-    user_lang=get_user_lang(call.message.chat.id)
-    await bot.edit_message_text(
-        message_id=call.message.id, 
-        chat_id=call.message.chat.id, 
-        text=languages[user_lang]["language_set"]
-    )
+    await set_user_lang(call.from_user.id, lang)
+    user_lang=await get_user_lang(call.from_user.id)
+    await call.edit_message_text(languages[user_lang]["language_set"])
 
 @bot.on_message(filters.private & filters.command("start"))
 async def start(bot: TgBot, message: Message):
@@ -39,57 +35,63 @@ async def start(bot: TgBot, message: Message):
         clients[message.chat.id]
     except KeyError:
         clients[message.chat.id]={}
-    if not setup_user_lang(message.chat.id):
+    if not await setup_user_lang(message.chat.id):
         return
-    user_lang=get_user_lang(message.chat.id)
+    user_lang=await get_user_lang(message.chat.id)
     await bot.send_message(
         message.chat.id, 
         languages[user_lang]["welcome"]
     )
 
-@bot.on_message(filters.private & filters.command("login"))
-async def login(bot: TgBot, message: Message):
-    user_lang=get_user_lang(message.chat.id)
-    client_credentials = clients.get(message.chat.id)
-    if client_credentials:
-        client=client_credentials["client"]
-        await bot.reply_to(message, languages[user_lang]["already_logged_in"].format(username=client.username))
-        return
-    
-    qrcode_button = InlineKeyboardButton(text=languages[user_lang]["qrcode_login"], callback_data="login_qrcode")
-    pronote_button = InlineKeyboardButton(text=languages[user_lang]["pronote_login"], callback_data="login_pronote")
-    lyceeconnecte_aquitaine_button = InlineKeyboardButton(text=languages[user_lang]["lycee_connecte_local"], callback_data="login_lyceeconnecte_aquitaine")
-    available_login_methods_keyboard = InlineKeyboardMarkup(
+async def create_login_methods_keyboard(user_lang):
+    return InlineKeyboardMarkup(
         [
             [
-                qrcode_button
+                InlineKeyboardButton(
+                    text=languages[user_lang]["qrcode_login"],
+                    callback_data="login_qrcode"
+                )
             ],
             [
-                pronote_button
+                InlineKeyboardButton(
+                    text=languages[user_lang]["pronote_login"],
+                    callback_data="login_pronote"
+                )
             ],
             [
-                lyceeconnecte_aquitaine_button
+                InlineKeyboardButton(
+                    text=languages[user_lang]["lycee_connecte_local"],
+                    callback_data="login_lyceeconnecte_aquitaine"
+                )
             ]
         ]
     )
-    await bot.send_message(
-        message.chat.id, 
+
+@bot.on_message(filters.private & filters.command("login"))
+async def login(bot: TgBot, message: Message):
+    user_lang=await get_user_lang(message.chat.id)
+    client_credentials = clients.get(message.chat.id)
+    if client_credentials:
+        client=client_credentials["client"]
+        return await message.reply_text(languages[user_lang]["already_logged_in"].format(username=client.username))
+
+    await message.reply_text(
         languages[user_lang]["select_login_method"],
-        reply_markup=available_login_methods_keyboard
+        reply_markup=await create_login_methods_keyboard(user_lang)
     )
 
 @bot.on_callback_query(filters.private & filters.regex(r"^login\_"))
 async def handle_login_method(_, call: CallbackQuery):
-    if call.data == "login_qrcode":
-        await handle_login_qrcode(call)
-    elif call.data == "login_pronote":
-        await handle_login_pronote(call)
-    elif call.data == "login_lyceeconnecte_aquitaine":
-        await handle_login_lyceeconnecte_aquitaine(call)
+    handlers={
+        "login_qrcode": handle_login_qrcode,
+        "login_pronote": handle_login_pronote,
+        "login_lyceeconnecte_aquitaine": handle_login_lyceeconnecte_aquitaine
+    }
+    await handlers.get(call.data)(call)
 
 @bot.on_message(filters.private & filters.command("grades"))
 async def get_grades(bot: TgBot, message: Message):
-    user_lang=get_user_lang(message.chat.id)
+    user_lang=await get_user_lang(message.chat.id)
     client_credentials = clients.get(message.chat.id)
     if client_credentials:
         client = client_credentials['client']
@@ -116,7 +118,7 @@ async def get_grades(bot: TgBot, message: Message):
 
 @bot.on_message(filters.private & filters.command("homework"))
 async def get_homework(bot: TgBot, message: Message):
-    user_lang=get_user_lang(message.chat.id)
+    user_lang=await get_user_lang(message.chat.id)
     client_credentials = clients.get(message.chat.id)
     if client_credentials:
         client = client_credentials['client']
@@ -155,7 +157,7 @@ async def get_homework(bot: TgBot, message: Message):
 
 @bot.on_message(filters.private & filters.command("timetable"))
 async def get_timetable(bot: TgBot, message: Message):
-    user_lang=get_user_lang(message.chat.id)
+    user_lang=await get_user_lang(message.chat.id)
     client_credentials = clients.get(message.chat.id)
     if client_credentials:
         client = client_credentials['client']
@@ -174,7 +176,7 @@ async def get_timetable(bot: TgBot, message: Message):
         timetable_message = languages[user_lang]["timetable_header"].format(date=format_date(timetable[0].start, format="EEEE d MMMM", locale=user_locale))
         
         for lesson in timetable:
-            set_user_lesson(user_id=message.chat.id, lesson=lesson)
+            await set_user_lesson(user_id=message.chat.id, lesson=lesson)
         timetable_keyboard=InlineKeyboardMarkup(
             [
                 [
@@ -213,17 +215,17 @@ async def get_next_day_timetable(client):
 
 @bot.on_message(filters.private & filters.command("enable_notifications"))
 async def enable_notifications_command(_, message: Message):
-    enable_notifications(message)
+    await enable_notifications(message)
 
 @bot.on_message(filters.private & filters.command("disable_notifications"))
 async def disable_notifications_command(_, message: Message):
-    disable_notifications(message)
+    await disable_notifications(message)
 
 @bot.on_callback_query(filters.private & filters.regex(r"^lesson\_"))
 async def lesson_button_handler(bot: TgBot, call: CallbackQuery):
-    user_lang=get_user_lang(call.message.chat.id)
+    user_lang=await get_user_lang(call.message.chat.id)
     lesson_id=call.data.split("lesson_")[1]
-    lesson=get_user_lesson(user_id=call.from_user.id, lesson_id=lesson_id)
+    lesson=await get_user_lesson(user_id=call.from_user.id, lesson_id=lesson_id)
     text=languages[user_lang]["timetable_entry"].format(
         subject=lesson.subject.name,
         teacher=lesson.teacher_name,
@@ -235,18 +237,18 @@ async def lesson_button_handler(bot: TgBot, call: CallbackQuery):
 
 @bot.on_message(filters.private & filters.command("settings"))
 async def settings_command(_, message: Message):
-    settings_message(message)
+    await settings_message(message)
 
 @bot.on_callback_query(filters.private & filters.regex(r"^settings\_"))
 async def setting_callback_handler(_, call:CallbackQuery):
     setting=call.data.split("settings_")[1]
     if setting=="set_language":
-        change_user_lang(call.message)
+        await change_user_lang(call.message)
 
 @bot.on_message(filters.private & filters.command("logout"))
 async def logout(bot: TgBot, message: Message):
     chat_id=message.chat.id
-    user_lang=get_user_lang(chat_id)
+    user_lang=await get_user_lang(chat_id)
     if await logout_credentials(chat_id):
         await bot.send_message(chat_id, languages[user_lang]["logout_successful"])
     else:

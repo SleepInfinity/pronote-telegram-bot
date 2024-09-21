@@ -18,8 +18,8 @@ from PIL import Image
 from utils.logger import logger
 
 async def handle_login_qrcode(call: CallbackQuery):
-    user_lang=get_user_lang(call.message.chat.id)
-    await call.message.edit_text(languages[user_lang]["send_qrcode"])
+    user_lang=await get_user_lang(call.message.chat.id)
+    await call.edit_message_text(languages[user_lang]["send_qrcode"])
     return await bot.ask(
         update_type=Handlers.MESSAGE,
         next_step=process_login_qrcode,
@@ -28,7 +28,7 @@ async def handle_login_qrcode(call: CallbackQuery):
     #bot.register_next_step_handler(msg, process_login_qrcode)
 
 async def process_login_qrcode(bot: TgBot, message: Message, data: dict):
-    user_lang=get_user_lang(message.chat.id)
+    user_lang=await get_user_lang(message.chat.id)
     if not message.photo:
         return await message.reply_text(languages[user_lang]["please_send_photo"])
     photo_file_id = message.photo[-1].file_id
@@ -55,7 +55,7 @@ async def process_login_qrcode(bot: TgBot, message: Message, data: dict):
     #bot.register_next_step_handler(msg, process_login_qrcode_pin_handler, qrcode_data)
 
 async def process_login_qrcode_pin_handler(bot: TgBot, message: Message, data: dict):
-    user_lang=get_user_lang(message.chat.id)
+    user_lang=await get_user_lang(message.chat.id)
     pin = message.text
     if len(pin) != 4 or not pin.isdigit():
         return await message.reply_text(languages[user_lang]["please_send_4_digits"])
@@ -80,8 +80,8 @@ async def process_login_qrcode_pin_handler(bot: TgBot, message: Message, data: d
         await bot.send_message(message.chat.id, languages[user_lang]["login_failed"])
 
 async def handle_login_pronote(call: CallbackQuery):
-    user_lang=get_user_lang(call.message.chat.id)
-    await call.message.edit_text(text=languages[user_lang]["send_pronote_credentials"])
+    user_lang=await get_user_lang(call.message.chat.id)
+    await call.edit_message_text(languages[user_lang]["send_pronote_credentials"])
     return await bot.ask(
         update_type=Handlers.MESSAGE,
         next_step=process_login_pronote,
@@ -90,7 +90,7 @@ async def handle_login_pronote(call: CallbackQuery):
     #bot.register_next_step_handler(msg, process_login_pronote)
 
 async def process_login_pronote(bot: TgBot, message: Message, data: dict):
-    user_lang=get_user_lang(message.chat.id)
+    user_lang=await get_user_lang(message.chat.id)
     try:
         url, username, password = message.text.split(',')
         client = pronotepy.Client(url.strip(), username.strip(), password.strip())
@@ -112,17 +112,18 @@ async def process_login_pronote(bot: TgBot, message: Message, data: dict):
         await bot.send_message(message.chat.id, languages[user_lang]["error_logging_in"])
         logger.error(f"Error while logging in with pronote: {str(e)}")
 
-async def handle_login_lyceeconnecte_aquitaine(call):
-    user_lang=get_user_lang(call.message.chat.id)
-    msg = bot.edit_message_text(
-        message_id=call.message.id,
-        chat_id=call.message.chat.id,
-        text=languages[user_lang]["send_lyceeconnecte_credentials"]
+async def handle_login_lyceeconnecte_aquitaine(call: CallbackQuery):
+    user_lang=await get_user_lang(call.from_user.id)
+    await call.edit_message_text(languages[user_lang]["send_lyceeconnecte_credentials"])
+    return await bot.ask(
+        update_type=Handlers.MESSAGE,
+        next_step=process_login_lyceeconnecte_aquitaine,
+        filters=filters.user(call.from_user.id) & filters.text
     )
-    bot.register_next_step_handler(msg, process_login_lyceeconnecte_aquitaine)
+    #bot.register_next_step_handler(msg, process_login_lyceeconnecte_aquitaine)
 
-async def process_login_lyceeconnecte_aquitaine(message):
-    user_lang=get_user_lang(message.chat.id)
+async def process_login_lyceeconnecte_aquitaine(bot: TgBot, message: Message, _):
+    user_lang=await get_user_lang(message.chat.id)
     try:
         url, username, password = message.text.split(',')
         client = pronotepy.Client(
@@ -144,11 +145,11 @@ async def process_login_lyceeconnecte_aquitaine(message):
                 "uuid": client.uuid,
             }
             clients[message.chat.id] = credentials
-            bot.send_message(message.chat.id, languages[user_lang]["login_successful"])
+            await bot.send_message(message.chat.id, languages[user_lang]["login_successful"])
         else:
-            bot.send_message(message.chat.id, languages[user_lang]["login_failed"])
+            await bot.send_message(message.chat.id, languages[user_lang]["login_failed"])
     except Exception as e:
-        bot.send_message(message.chat.id, languages[user_lang]["error_logging_in"])
+        await bot.send_message(message.chat.id, languages[user_lang]["error_logging_in"])
         logger.error(f"Error while logging in with lyceeconnecte: {str(e)}")
 
 async def logout_credentials(user_id):
