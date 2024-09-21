@@ -79,16 +79,17 @@ async def process_login_qrcode_pin_handler(bot: TgBot, message: Message, data: d
     else:
         await bot.send_message(message.chat.id, languages[user_lang]["login_failed"])
 
-async def handle_login_pronote(call):
+async def handle_login_pronote(call: CallbackQuery):
     user_lang=get_user_lang(call.message.chat.id)
-    msg = bot.edit_message_text(
-        message_id=call.message.id,
-        chat_id=call.message.chat.id,
-        text=languages[user_lang]["send_pronote_credentials"]
+    await call.message.edit_text(text=languages[user_lang]["send_pronote_credentials"])
+    return await bot.ask(
+        update_type=Handlers.MESSAGE,
+        next_step=process_login_pronote,
+        filters=filters.user(call.message.chat.id) & filters.text
     )
-    bot.register_next_step_handler(msg, process_login_pronote)
+    #bot.register_next_step_handler(msg, process_login_pronote)
 
-async def process_login_pronote(message):
+async def process_login_pronote(bot: TgBot, message: Message, data: dict):
     user_lang=get_user_lang(message.chat.id)
     try:
         url, username, password = message.text.split(',')
@@ -104,11 +105,11 @@ async def process_login_pronote(message):
                 "uuid": client.uuid,
             }
             clients[message.chat.id] = credentials
-            bot.send_message(message.chat.id, languages[user_lang]["login_successful"])
+            await bot.send_message(message.chat.id, languages[user_lang]["login_successful"])
         else:
-            bot.send_message(message.chat.id, languages[user_lang]["login_failed"])
+            await bot.send_message(message.chat.id, languages[user_lang]["login_failed"])
     except Exception as e:
-        bot.send_message(message.chat.id, languages[user_lang]["error_logging_in"])
+        await bot.send_message(message.chat.id, languages[user_lang]["error_logging_in"])
         logger.error(f"Error while logging in with pronote: {str(e)}")
 
 async def handle_login_lyceeconnecte_aquitaine(call):
