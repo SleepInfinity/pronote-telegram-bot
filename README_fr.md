@@ -103,5 +103,5 @@ Si vous souhaitez contribuer à ce projet, n'hésitez pas à forker le dépôt e
 ## Remerciements
 
 - [PronotePy](https://github.com/bain3/pronotepy) - Wrapper Python pour Pronote.
-- [telebot/PyTelegramBotApi](https://github.com/eternnoir/pyTelegramBotAPI) - Un wrapper Python pour l'API Telegram Bot.
-- [Kvsqlite](https://github.com/AYMENJD/Kvsqlite) - Un magasin de valeurs-clés simple et rapide basé sur SQLite.
+- [TGram](https://github.com/z44d/tgram) - Un wrapper Python pour l'API Telegram Bot.
+- [Kvsqlite](https://github.com/AYMENJD/Kvsqlite) - Un stockage de valeurs-clés simple et rapide basé sur SQLite.
