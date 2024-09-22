@@ -1,4 +1,3 @@
-from bot_instance import bot
 from modules.database import get_user_lang
 from modules.language import languages
 from tgram.types import (

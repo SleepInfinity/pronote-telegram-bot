@@ -1,4 +1,3 @@
-import io
 import json
 from uuid import uuid4
 import pronotepy
@@ -110,7 +109,7 @@ async def process_login_pronote(bot: TgBot, message: Message, data: dict):
             await bot.send_message(message.chat.id, languages[user_lang]["login_failed"])
     except Exception as e:
         await bot.send_message(message.chat.id, languages[user_lang]["error_logging_in"])
-        logger.error(f"Error while logging in with pronote: {str(e)}")
+        logger.error(f"[{str(message.chat.id)}] Error while logging in with pronote: {str(e)}")
 
 async def handle_login_lyceeconnecte_aquitaine(call: CallbackQuery):
     user_lang=await get_user_lang(call.from_user.id)
@@ -150,7 +149,7 @@ async def process_login_lyceeconnecte_aquitaine(bot: TgBot, message: Message, _)
             await bot.send_message(message.chat.id, languages[user_lang]["login_failed"])
     except Exception as e:
         await bot.send_message(message.chat.id, languages[user_lang]["error_logging_in"])
-        logger.error(f"Error while logging in with lyceeconnecte: {str(e)}")
+        logger.error(f"[{str(message.chat.id)}] Error while logging in with lyceeconnecte: {str(e)}")
 
 async def logout_credentials(user_id):
     client_credentials = clients.get(user_id)
