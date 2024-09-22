@@ -166,7 +166,7 @@ async def send_grade_notification(grade, chat_id):
         date=grade.date.strftime('%Y-%m-%d'),
         comment=grade.comment if grade.comment else languages[user_lang]['no_comment']
     )
-    await bot.send_message(chat_id, message, parse_mode='Markdown')
+    await bot.send_message(chat_id, message)
 
 async def send_homework_notification(homework, chat_id):
     user_lang=await get_user_lang(chat_id)
@@ -180,7 +180,7 @@ async def send_homework_notification(homework, chat_id):
         ),
         description=homework.description
     )
-    await bot.send_message(chat_id, message, parse_mode='Markdown')
+    await bot.send_message(chat_id, message)
 
 async def check_for_new_notifications(chat_id):
     try:
