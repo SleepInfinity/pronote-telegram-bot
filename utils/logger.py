@@ -4,11 +4,8 @@ from colorama import Fore, Style, init
 
 init(autoreset=True)
 
-logger = logging.getLogger('my_app')
+logger = logging.getLogger('bot')
 logger.setLevel(logging.DEBUG)
-
-telebot_logger = logging.getLogger('telebot')
-telebot_logger.setLevel(logging.CRITICAL)
 
 class ColorFormatter(logging.Formatter):
     FORMATS = {
