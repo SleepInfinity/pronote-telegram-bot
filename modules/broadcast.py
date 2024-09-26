@@ -27,8 +27,11 @@ async def broadcast_message_handler(bot: TgBot, message: Message, _):
     m=await message.reply_text(f"sending to {len(user_ids)} users...")
     sent_to_users=0
     for user_id in user_ids:
-        await bot.send_message(user_id, broadcast_message)
-        sent_to_users+=1
+        try:
+            await bot.send_message(user_id, broadcast_message)
+            sent_to_users+=1
+        except:
+            pass
     await m.edit_text(f"Message sent to {sent_to_users} users successfully.")
 
 async def cancel(_, m: Message) -> bool:
