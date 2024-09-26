@@ -25,3 +25,7 @@ async def set_user_lesson(user_id, lesson):
         user_lessons[user_id] = {}
     user_lessons[user_id][str(user_id)+"_"+str(lesson.id)]=lesson
     await db.set("user_lessons", user_lessons)
+
+async def get_user_ids():
+    user_ids = list((await db.get("user_languages")).keys() or [])
+    return user_ids

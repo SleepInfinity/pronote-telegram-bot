@@ -45,12 +45,16 @@ Un bot Telegram basé sur Python qui interagit avec Pronote pour fournir aux ét
 
    ```env
    TELEGRAM_TOKEN=votre_token_telegram
+   ADMIN_ID=your_telegram_account_id #facultatif
    TIMEZONE=votre_timezone
    POLLING_INTERVAL=300  # valeur par défaut de 5 minutes (300 secondes)
    ```
 
    - Remplacez `votre_token_telegram` par votre véritable token de bot Telegram.
      Si vous ne savez pas comment obtenir le token de bot, vous pouvez consulter [obtenir votre token de bot](https://core.telegram.org/bots/tutorial#obtain-your-bot-token).
+
+   - Remplacez éventuellement `your_telegram_account_id` par votre identifiant de compte Telegram actuel si vous souhaitez activer la fonctionnalité de diffusion.
+     Pour trouver l'identifiant de votre compte Telegram, vous pouvez utiliser ce [Bot](https://t.me/WhatChatIDBot).
 
    - Remplacez `votre_timezone` par votre fuseau horaire réel, par défaut `UTC`. Pour la France, utilisez `Europe/Paris`.
      Vous pouvez trouver une liste des fuseaux horaires pris en charge [ici](https://gist.githubusercontent.com/heyalexej/8bf688fd67d7199be4a1682b3eec7568/raw/daacf0e4496ccc60a36e493f0252b7988bceb143/pytz-time-zones.py).
@@ -87,6 +91,7 @@ Une fois le bot en fonctionnement, vous pouvez interagir avec lui via Telegram e
 - `/enable_notifications` - Activer les notifications, le bot interrogera Pronote toutes les 5 minutes (configurable via la variable d'environnement `POLLING_INTERVAL`) pour les mises à jour des nouvelles notes ou devoirs.
 - `/disable_notifications` - Désactiver les notifications pour les nouvelles notes et devoirs.
 - `/settings` - Paramètres du bot.
+- `/broadcast` - Diffuser un message à tous les utilisateurs du bot (pour l'administrateur uniquement).
 - `/logout` - Se déconnecter de votre compte Pronote.
 
 ## Liste des tâches

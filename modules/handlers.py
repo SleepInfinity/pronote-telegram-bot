@@ -18,6 +18,7 @@ from dotenv import load_dotenv
 from modules.settings import settings_message
 from modules.language import change_user_lang
 from modules.notifications import enable_notifications, disable_notifications
+from modules.broadcast import get_broadcast_message
 
 load_dotenv()
 timezone = pytz.timezone(os.getenv('TIMEZONE') or "UTC")
@@ -244,6 +245,10 @@ async def setting_callback_handler(_, call:CallbackQuery):
     setting=call.data.split("settings_")[1]
     if setting=="set_language":
         await change_user_lang(call.message)
+
+@bot.on_message(filters.private & filters.command("broadcast"))
+async def broadcast_handler(bot: TgBot, message: Message):
+    await get_broadcast_message(bot, message)
 
 @bot.on_message(filters.private & filters.command("logout"))
 async def logout(bot: TgBot, message: Message):
