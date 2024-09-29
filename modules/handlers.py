@@ -182,7 +182,7 @@ async def get_timetable(bot: TgBot, message: Message):
             [
                 [
                     InlineKeyboardButton(
-                        text=f"{lesson.subject.name} - {lesson.start.strftime('%H:%M')} - {lesson.classroom if lesson.classroom else lesson.end.strftime('%H:%M')}",
+                        text=f"{'🚫 ' if lesson.canceled else ''}{lesson.subject.name} - {lesson.start.strftime('%H:%M')} - {lesson.classroom if lesson.classroom else lesson.end.strftime('%H:%M')}",
                         callback_data="lesson_"+str(lesson.id)
                     ) 
                 ] for lesson in timetable
