@@ -45,12 +45,16 @@ A Python-based Telegram bot that interacts with Pronote to provide students and 
 
    ```env
    TELEGRAM_TOKEN=your_telegram_bot_token
+   ADMIN_ID=your_telegram_account_id #optional
    TIMEZONE=your_timezone
    POLLING_INTERVAL=300  # default to 5 minutes (300 seconds)
    ```
 
    - Replace `your_telegram_bot_token` with your actual Telegram bot token.
    If you don't know how to get the bot token you can take a look at [obtain-your-bot-token](https://core.telegram.org/bots/tutorial#obtain-your-bot-token)
+
+   - Optionally replace `your_telegram_account_id` with your actual Telegram account ID if you want to enable the broadcast feature.
+   To find your telegram account ID you can use this [Bot](https://t.me/WhatChatIDBot).
 
    - Replace `your_timezone` with your actual location's timezone, default to `UTC`, for france use `Europe/Paris`.
    [Here](https://gist.githubusercontent.com/heyalexej/8bf688fd67d7199be4a1682b3eec7568/raw/daacf0e4496ccc60a36e493f0252b7988bceb143/pytz-time-zones.py) is a list of all supported timezones.
@@ -87,6 +91,7 @@ Once the bot is running, you can interact with it through Telegram. Use the foll
 - `/enable_notifications` - Enable notifications, which will poll Pronote every 5 minutes (configurable via the `POLLING_INTERVAL` environment variable) for updates on new grades or homework.
 - `/disable_notifications` - Disable notifications for new grades and homework.
 - `/settings` - Bot's Settings.
+- `/broadcast` - Broadcast a message to all the bot's users (For admin only).
 - `/logout` - Log out from your Pronote account.
 
 ## To-Do List
