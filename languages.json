@@ -45,7 +45,13 @@
     "new_grade_notification": "*📢📊 New Grade In {subject}*\n*Grade:* {grade}/{out_of}\n*Date:* {date}\n*Comment:* {comment}",
     "new_homework_notification": "*📢📝 New Homework in {subject}*\n*To do for {date}*\n*Description:* {description}",
     "settings": "*Settings:*",
-    "set_language": "Set Language 🌐"
+    "set_language": "Set Language 🌐",
+    "🚫": "Canceled",
+    "🔄": "Change of room",
+    "🆓": "Dispensation",
+    "🏖️": "Outing",
+    "🔒": "Detention",
+    "🧪": "Test"
   },
   "fr": {
     "name": "Français",
@@ -93,7 +99,13 @@
     "new_grade_notification": "*📢📊 Nouvelle note en {subject}*\n*Note :* {grade}/{out_of}\n*Date :* {date}\n*Commentaire :* {comment}",
     "new_homework_notification": "*📢📝 Nouveau devoir en {subject}*\n*A faire pour le {date}*\n*Description :* {description}",
     "settings": "*Paramètres:*",
-    "set_language": "Définir la langue 🌐"
+    "set_language": "Définir la langue 🌐",
+    "🚫": "Annulé",
+    "🔄": "Changement de salle",
+    "🆓": "Dispense",
+    "🏖️": "Outing",
+    "🔒": "Sortie",
+    "🧪": "Test"
   },
   "ar": {
     "name": "العربية",
@@ -141,7 +153,13 @@
     "new_grade_notification": "📢📊 درجة جديدة في {subject}\nالدرجة: {grade}/{out_of}\nالتاريخ: {date}\nالتعليق: {comment}",
     "new_homework_notification": "📢📝 واجب منزلي جديد في {subject}\nيجب القيام به ليوم {date}\nالوصف: {description}",
     "settings": "الإعدادات:",
-    "set_language": "ضبط اللغة 🌐"
+    "set_language": "ضبط اللغة 🌐",
+    "🚫": "تم الإلغاء",
+    "🔄": "تغيير الغرفة",
+    "🆓": "الإعفاء",
+    "🏖️": "نزهة",
+    "🔒": "الاحتجاز",
+    "🧪": "امتحان"
   },
   "de": {
     "name": "Deutsch",
@@ -189,6 +207,12 @@
     "new_grade_notification": "📢📊 Neue Note in {subject}\nNote: {grade}/{out_of}\nDatum: {date}\nKommentar: {comment}",
     "new_homework_notification": "📢📝 Neue Hausaufgaben im Fach {subject}\nZu erledigen für {date}\nBeschreibung: {description}",
     "settings": "Einstellungen:",
-    "set_language": "Sprache festlegen 🌐"
+    "set_language": "Sprache festlegen 🌐",
+    "🚫": "Abgesagt",
+    "🔄": "Zimmerwechsel",
+    "🆓": "Dispensation",
+    "🏖️": "Ausflug",
+    "🔒": "Festnahme",
+    "🧪": "Prüfen"
   }
 }
