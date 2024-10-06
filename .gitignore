@@ -1,6 +1,7 @@
 # Ignore all __pycache__ folders
 __pycache__/
 tests/
+.ruff_cache/
 
 # Ignore Python bytecode files
 *.pyc

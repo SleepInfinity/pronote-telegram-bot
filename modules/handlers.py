@@ -222,7 +222,9 @@ async def get_timetable(bot: TgBot, message: Message):
                 continue
             await set_user_lesson(user_id=message.chat.id, lesson=lesson)
             lesson_tags = await get_lesson_tags(lesson)
-            tags=list(set([*tags, *lesson_tags])) # unpacking every tag in the tags list and removing duplicates.
+            tags = list(
+                set([*tags, *lesson_tags])
+            )  # unpacking every tag in the tags list and removing duplicates.
             timetable_buttons.append(
                 [
                     InlineKeyboardButton(
@@ -233,9 +235,11 @@ async def get_timetable(bot: TgBot, message: Message):
             )
         timetable_keyboard = InlineKeyboardMarkup(timetable_buttons)
         del timetable_buttons
-        tag_hints='\n'.join(tag+" : "+languages[user_lang][tag] for tag in tags)
+        tag_hints = "\n".join(tag + " : " + languages[user_lang][tag] for tag in tags)
         await bot.send_message(
-            message.chat.id, timetable_message+tag_hints, reply_markup=timetable_keyboard
+            message.chat.id,
+            timetable_message + tag_hints,
+            reply_markup=timetable_keyboard,
         )
     else:
         await bot.send_message(message.chat.id, languages[user_lang]["not_logged_in"])
@@ -262,8 +266,8 @@ async def get_today_timetable(client):
     days = 1
     for i in range(10):
         timetable = client.lessons(
-            datetime.datetime.now(timezone) - datetime.timedelta(days=2),
-            datetime.datetime.now(timezone) - datetime.timedelta(days=1),
+            datetime.datetime.now(timezone),
+            datetime.datetime.now(timezone) + datetime.timedelta(days=days),
         )
         if not timetable:
             days += 1
