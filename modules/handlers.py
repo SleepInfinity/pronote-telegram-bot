@@ -197,8 +197,7 @@ async def get_timetable(bot: TgBot, message: Message):
         ) < datetime.datetime.now(
             timezone
         ):  # if timetable is empty or the last lesson of the day is alreay passed
-            # timetable=await get_next_day_timetable(client)
-            pass
+            timetable=await get_next_day_timetable(client)
 
         if not timetable:
             await bot.send_message(
@@ -217,7 +216,7 @@ async def get_timetable(bot: TgBot, message: Message):
         timetable_buttons = []
         for lesson in timetable:
             if (
-                lesson.canceled and lesson.room_change
+                lesson.canceled and lesson.modified
             ):  # The lesson with the old classroom number.
                 continue
             await set_user_lesson(user_id=message.chat.id, lesson=lesson)
@@ -246,20 +245,17 @@ async def get_timetable(bot: TgBot, message: Message):
 
 
 async def get_lesson_tags(lesson):
-    tags: list = []
-    if lesson.canceled:
-        tags.append("🚫")
-    if lesson.room_change:
-        tags.append("🔄")
-    if lesson.exempted:
-        tags.append("🆓")
-    if lesson.outing:
-        tags.append("🏖️")
-    if lesson.detention:
-        tags.append("🔒")
-    if lesson.test:
-        tags.append("🧪")
-    return tags
+    tags: list = [
+        (lesson.canceled, "🚫"),
+        (lesson.modified, "🔄"),
+        (lesson.exempted, "🆓"),
+        (lesson.outing, "🏖️"),
+        (lesson.detention, "🔒"),
+        (lesson.test, "🧪"),
+    ]
+
+    return [value for key, value in tags if key]
+
 
 
 async def get_today_timetable(client):

@@ -24,7 +24,11 @@ async def get_user_lesson(user_id, lesson_id):
 
 
 async def set_user_lesson(user_id, lesson):
-    user_lessons = await db.get("user_lessons") or {}
+    try:
+        user_lessons = await db.get("user_lessons") or {}
+    except:
+        await db.set("user_lessons", {})
+        user_lessons = await db.get("user_lessons") or {}
     if user_id not in user_lessons:
         user_lessons[user_id] = {}
     user_lessons[user_id][str(user_id) + "_" + str(lesson.id)] = lesson
