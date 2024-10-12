@@ -30,6 +30,7 @@ from modules.settings import settings_message
 from modules.language import change_user_lang
 from modules.notifications import enable_notifications, disable_notifications
 from modules.broadcast import get_broadcast_message
+from ai.handlers import prompt_handler
 
 load_dotenv()
 timezone = pytz.timezone(os.getenv("TIMEZONE") or "UTC")
@@ -197,7 +198,7 @@ async def get_timetable(bot: TgBot, message: Message):
         ) < datetime.datetime.now(
             timezone
         ):  # if timetable is empty or the last lesson of the day is alreay passed
-            timetable=await get_next_day_timetable(client)
+            timetable = await get_next_day_timetable(client)
 
         if not timetable:
             await bot.send_message(
@@ -255,7 +256,6 @@ async def get_lesson_tags(lesson):
     ]
 
     return [value for key, value in tags if key]
-
 
 
 async def get_today_timetable(client):
@@ -344,3 +344,11 @@ async def logout(bot: TgBot, message: Message):
 async def privacy_policy(bot: TgBot, message: Message):
     pp_file = open("PRIVACY_POLICY.md", "r").read()
     await message.reply_text(text=pp_file, parse_mode="MarkDown")
+
+
+@bot.on_message(filters.private & filters.command("ai"))
+async def ai_handler(bot: TgBot, message: Message):
+    prompt = message.text.split("/ai")[1].strip()
+    if not prompt:
+        return await message.reply_text("Please Ask your question.")
+    await prompt_handler(bot, message, prompt)
