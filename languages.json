@@ -51,7 +51,9 @@
     "🆓": "Dispensation",
     "🏖️": "Outing",
     "🔒": "Detention",
-    "🧪": "Test"
+    "🧪": "Test",
+    "chat_cleared": "The chat with the AI was cleared successfully.",
+    "ask_question": "Please ask your question after the command.\nExample: /ai What time is it ?"
   },
   "fr": {
     "name": "Français",
@@ -105,7 +107,9 @@
     "🆓": "Dispense",
     "🏖️": "Sortie",
     "🔒": "Détention",
-    "🧪": "Test"
+    "🧪": "Test",
+    "chat_cleared": "La discussion avec l'IA a été terminée avec succès.",
+    "ask_question": "Veuillez poser votre question après la commande.\nExemple : /ai Quelle heure est-il ?"
   },
   "ar": {
     "name": "العربية",
@@ -159,7 +163,9 @@
     "🆓": "الإعفاء",
     "🏖️": "نزهة",
     "🔒": "الاحتجاز",
-    "🧪": "امتحان"
+    "🧪": "امتحان",
+    "chat_cleared": "تم إتمام الدردشة مع الذكاء الاصطناعي بنجاح.",
+    "ask_question": "من فضلك اطرح سؤالك بعد الأمر.\nمثال: /ai ما هو الوقت؟"
   },
   "de": {
     "name": "Deutsch",
@@ -213,6 +219,8 @@
     "🆓": "Dispensation",
     "🏖️": "Ausflug",
     "🔒": "Festnahme",
-    "🧪": "Prüfen"
+    "🧪": "Prüfen",
+    "chat_cleared": "Der Chat mit der KI wurde erfolgreich beendet.",
+    "ask_question": "Bitte stellen Sie Ihre Frage nach dem Befehl.\nBeispiel: /ai Wie spät ist es?"
   }
 }

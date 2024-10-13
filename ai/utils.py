@@ -1,11 +1,10 @@
-from collections import defaultdict
 from ai.chat import model
 import google.generativeai as genai
-from ai.tools import get_current_time, get_homework
+from ai.chat import functions
+from babel.dates import format_date
+from modules.language import languages
 
 user_chats = {}
-functions = {"get_current_time": get_current_time, "get_homework": get_homework}
-
 
 async def get_user_chat(user_id):
     if user_id in user_chats:
@@ -23,12 +22,12 @@ async def clear_user_chat(user_id):
         del user_chats[user_id]
 
 
-async def call_functions(response, message):
+async def call_functions(response, user_id):
     responses = {}
     for part in response.parts:
         if fn := part.function_call:
             if fn.name == "get_homework":
-                fn.args["user_id"] = str(message.from_user.id)
+                fn.args["user_id"] = str(user_id)
             responses[fn.name] = await functions[fn.name](**fn.args)
     if not responses:
         return None
@@ -40,15 +39,15 @@ async def call_functions(response, message):
         )
         for fn, val in responses.items()
     ]
-    print(response_parts)
     return response_parts
 
 
 async def format_homework(homeworks):
-    # group homeworks list into sublists of homeworks for each day.
-    grouped_data = defaultdict(list)
+    formatted_homeworks = ""
+    locale = languages["en"]["locale"]
     for homework in homeworks:
-        grouped_data[homework.date].append(homework)
-    grouped_homeworks = list(grouped_data.values())
-    for homework in grouped_homeworks:
-        pass
+        formatted_homeworks += f"To do for {format_date(homework.date, format='EEEE dd/MM/YYYY', locale=locale)}\n"
+        formatted_homeworks += f"Subject: {homework.subject.name}\n"
+        formatted_homeworks += f"Description: {homework.description}\n"
+        formatted_homeworks += f"Is done: {'Yes' if homework.done else 'No'}\n\n"
+    return formatted_homeworks

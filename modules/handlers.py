@@ -30,7 +30,7 @@ from modules.settings import settings_message
 from modules.language import change_user_lang
 from modules.notifications import enable_notifications, disable_notifications
 from modules.broadcast import get_broadcast_message
-from ai.handlers import prompt_handler
+from ai.handlers import prompt_handler, clear_chat_handler
 
 load_dotenv()
 timezone = pytz.timezone(os.getenv("TIMEZONE") or "UTC")
@@ -348,7 +348,13 @@ async def privacy_policy(bot: TgBot, message: Message):
 
 @bot.on_message(filters.private & filters.command("ai"))
 async def ai_handler(bot: TgBot, message: Message):
+    chat_id = message.chat.id
+    user_lang = await get_user_lang(chat_id)
     prompt = message.text.split("/ai")[1].strip()
     if not prompt:
-        return await message.reply_text("Please Ask your question.")
+        return await message.reply_text(languages[user_lang]["ask_question"])
     await prompt_handler(bot, message, prompt)
+
+@bot.on_message(filters.private & filters.command("clear"))
+async def clear_chat(bot: TgBot, message: Message):
+    await clear_chat_handler(bot, message)
