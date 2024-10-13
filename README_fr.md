@@ -11,6 +11,7 @@ Un bot Telegram basé sur Python qui interagit avec Pronote pour fournir aux ét
 - **Voir les notes :** Consultez vos dernières notes directement sur Telegram.
 - **Consulter les devoirs :** Recevez une liste des devoirs à venir.
 - **Voir l'emploi du temps :** Accédez à l'emploi du temps du lendemain.
+- **Assistance IA :** posez des questions à l'IA et obtenez de l'aide pour vos devoirs ou ayez une conversation amicale.
 - **Notifications :** Notifications automatiques pour les nouvelles notes, les devoirs à venir et d'autres mises à jour importantes.
 - **Support multilingue :** Anglais, Français, et plus.
 
@@ -48,6 +49,7 @@ Un bot Telegram basé sur Python qui interagit avec Pronote pour fournir aux ét
    ADMIN_ID=your_telegram_account_id #facultatif
    TIMEZONE=votre_timezone
    POLLING_INTERVAL=300  # valeur par défaut de 5 minutes (300 secondes)
+   GOOGLE_API_KEY=your_google_gemini_key
    ```
 
    - Remplacez `votre_token_telegram` par votre véritable token de bot Telegram.
@@ -60,6 +62,8 @@ Un bot Telegram basé sur Python qui interagit avec Pronote pour fournir aux ét
      Vous pouvez trouver une liste des fuseaux horaires pris en charge [ici](https://gist.githubusercontent.com/heyalexej/8bf688fd67d7199be4a1682b3eec7568/raw/daacf0e4496ccc60a36e493f0252b7988bceb143/pytz-time-zones.py).
 
    - La variable `POLLING_INTERVAL` définit l'intervalle de temps en secondes pour interroger l'API Pronote pour les nouvelles notifications, avec une valeur par défaut de 300 secondes (5 minutes).
+
+   - Remplacez `your_google_gemini_key` par votre clé API Google Gemini si vous souhaitez utiliser la fonctionnalité d'IA. Pour trouver la clé API, consultez [Obtenir une clé API Gemini](https://ai.google.dev/gemini-api/docs/api-key)
 
 4. **Utilisateurs Windows :**
 
@@ -88,6 +92,8 @@ Une fois le bot en fonctionnement, vous pouvez interagir avec lui via Telegram e
 - `/grades` - Voir vos dernières notes (après connexion).
 - `/homework` - Consulter vos devoirs à venir (après connexion).
 - `/timetable` - Voir l'emploi du temps du lendemain (après connexion).
+- `/ai <question>` - Posez n'importe quelle question à l'IA, qu'il s'agisse de vos devoirs ou simplement de discuter.
+- `/clear` - Effacez la conversation actuelle de l'IA et démarrez-en une nouvelle.
 - `/enable_notifications` - Activer les notifications, le bot interrogera Pronote toutes les 5 minutes (configurable via la variable d'environnement `POLLING_INTERVAL`) pour les mises à jour des nouvelles notes ou devoirs.
 - `/disable_notifications` - Désactiver les notifications pour les nouvelles notes et devoirs.
 - `/settings` - Paramètres du bot.
@@ -98,6 +104,7 @@ Une fois le bot en fonctionnement, vous pouvez interagir avec lui via Telegram e
 
 - [x] Ajouter des notifications pour les notes, les devoirs et les emplois du temps.
 - [x] Implémenter le support multilingue (anglais, français, et plus).
+- [x] Intégrer l'assistance de l'IA pour les devoirs et les questions générales.
 - [ ] Étendre les fonctionnalités pour inclure d'autres fonctionnalités Pronote.
 - [ ] Nettoyer le code et le répartir dans plusieurs fichiers pour plus de lisibilité et d'évolutivité.
 

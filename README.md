@@ -11,6 +11,7 @@ A Python-based Telegram bot that interacts with Pronote to provide students and 
 - **View Grades:** Get your latest grades directly in Telegram.
 - **Check Homework:** Receive a list of upcoming homework assignments.
 - **View Timetable:** Access your next day's schedule.
+- **AI Assistance:** Ask questions to the AI and get help with your homework or have a friendly conversation.
 - **Notifications:** Automatic notifications for new grades, upcoming homework, and other important updates.
 - **Multi-language Support:** English, French and more.
 
@@ -48,6 +49,7 @@ A Python-based Telegram bot that interacts with Pronote to provide students and 
    ADMIN_ID=your_telegram_account_id #optional
    TIMEZONE=your_timezone
    POLLING_INTERVAL=300  # default to 5 minutes (300 seconds)
+   GOOGLE_API_KEY=your_google_gemini_key
    ```
 
    - Replace `your_telegram_bot_token` with your actual Telegram bot token.
@@ -60,6 +62,8 @@ A Python-based Telegram bot that interacts with Pronote to provide students and 
    [Here](https://gist.githubusercontent.com/heyalexej/8bf688fd67d7199be4a1682b3eec7568/raw/daacf0e4496ccc60a36e493f0252b7988bceb143/pytz-time-zones.py) is a list of all supported timezones.
 
    - The `POLLING_INTERVAL` defines the time interval in seconds for polling the Pronote API for new notifications, with a default value of 300 seconds (5 minutes).
+
+   - Replace `your_google_gemini_key` with your Google Gemini api key if you want to use the AI functionallity. To find the api key take a look at [Get a Gemini API key](https://ai.google.dev/gemini-api/docs/api-key)
 
 4. **Windows Users:**
 
@@ -88,6 +92,8 @@ Once the bot is running, you can interact with it through Telegram. Use the foll
 - `/grades` - View your latest grades (after logging in).
 - `/homework` - Check your upcoming homework assignments (after logging in).
 - `/timetable` - View your next day's timetable (after logging in).
+- `/ai <question>` - Ask the AI any question, whether it's about your homework or just to chat.
+- `/clear` - Clear the current AI conversation and start a new one.
 - `/enable_notifications` - Enable notifications, which will poll Pronote every 5 minutes (configurable via the `POLLING_INTERVAL` environment variable) for updates on new grades or homework.
 - `/disable_notifications` - Disable notifications for new grades and homework.
 - `/settings` - Bot's Settings.
@@ -98,6 +104,7 @@ Once the bot is running, you can interact with it through Telegram. Use the foll
 
 - [x] Add notifications for grades, homework, and schedules.
 - [x] Implement multi-language support (English, French, and more).
+- [x] Integrate AI assistance for homework and general questions.
 - [ ] Extend features to include additional Pronote functionalities.
 - [ ] Clean up the code and spread it into multiple files for more readability and scalability.
 
