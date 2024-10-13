@@ -3,7 +3,9 @@ colorama==0.4.6
 Kvsqlite==0.2.1
 Pillow==10.4.0
 git+https://github.com/SleepInfinity/pronotepy
+protobuf==5.28.2
 python-dotenv==1.0.1
 pytz==2024.2
 pyzbar==0.1.9
-tgram==1.11.3
+git+https://github.com/z44d/tgram
+google-generativeai==0.8.3
