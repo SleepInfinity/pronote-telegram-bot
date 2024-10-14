@@ -1,13 +1,19 @@
 import google.generativeai as genai
 from modules.language import languages
 from modules.database import get_user_lang
-from ai.utils import get_user_chat, set_user_chat, clear_user_chat, call_functions
+from tgram.types import Message
+from tgram import TgBot
+from ai.utils import get_user_chat, resolve_media, set_user_chat, clear_user_chat, call_functions
 
 
-async def prompt_handler(bot, message, prompt):
+async def prompt_handler(bot: TgBot, message: Message, prompt: str, is_media: bool):
     user_id = message.from_user.id
     chat = await get_user_chat(user_id)
-    response = chat.send_message(prompt)
+    if is_media:
+        file = await resolve_media(bot, message)
+        response = chat.send_message([file, prompt])
+    else:
+        response = chat.send_message(prompt)
     while True:
         response_parts = await call_functions(response, message.from_user.id)
         if response_parts:

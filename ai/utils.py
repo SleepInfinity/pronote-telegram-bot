@@ -1,3 +1,5 @@
+from tgram import TgBot
+from tgram.types import Message
 from ai.chat import model
 import google.generativeai as genai
 from ai.chat import functions
@@ -51,3 +53,32 @@ async def format_homework(homeworks):
         formatted_homeworks += f"Description: {homework.description}\n"
         formatted_homeworks += f"Is done: {'Yes' if homework.done else 'No'}\n\n"
     return formatted_homeworks
+
+async def resolve_media(bot, message):
+    """
+    Converts a message media to a gemini compatible file object
+    """
+    downloaded_file, mime_type = await download_file(bot, message)
+    file = await upload_file(downloaded_file, mime_type)
+    return file
+
+
+async def download_file(bot: TgBot, message: Message):
+    if message.photo:
+        file = message.photo[-1]
+        mime_type = "image/png"
+    else:
+        file = message.document
+        mime_type = file.mime_type
+
+    file_id = file.file_id
+    file_info = await bot.get_file(file_id)
+    downloaded_file = await bot.download_file(
+        file_id=file_id, file_path=file_info.file_path, in_memory=True
+    )
+    return downloaded_file, mime_type
+
+async def upload_file(file, mime_type):
+    uploaded_file = genai.upload_file(file, mime_type=mime_type)
+    file.close()
+    return uploaded_file

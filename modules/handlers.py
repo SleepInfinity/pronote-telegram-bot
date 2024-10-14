@@ -31,6 +31,7 @@ from modules.language import change_user_lang
 from modules.notifications import enable_notifications, disable_notifications
 from modules.broadcast import get_broadcast_message
 from ai.handlers import prompt_handler, clear_chat_handler
+from utils.message import is_media
 
 load_dotenv()
 timezone = pytz.timezone(os.getenv("TIMEZONE") or "UTC")
@@ -350,10 +351,17 @@ async def privacy_policy(bot: TgBot, message: Message):
 async def ai_handler(bot: TgBot, message: Message):
     chat_id = message.chat.id
     user_lang = await get_user_lang(chat_id)
-    prompt = message.text.split("/ai")[1].strip()
+    is_media_message = is_media(message)
+
+    if is_media_message:
+        prompt = message.caption.split("/ai")[1].strip()
+    else:
+        prompt = message.text.split("/ai")[1].strip()
+    
     if not prompt:
         return await message.reply_text(languages[user_lang]["ask_question"])
-    await prompt_handler(bot, message, prompt)
+    
+    await prompt_handler(bot, message, prompt, is_media_message)
 
 @bot.on_message(filters.private & filters.command("clear"))
 async def clear_chat(bot: TgBot, message: Message):
