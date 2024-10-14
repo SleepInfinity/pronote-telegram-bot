@@ -351,17 +351,13 @@ async def privacy_policy(bot: TgBot, message: Message):
 async def ai_handler(bot: TgBot, message: Message):
     chat_id = message.chat.id
     user_lang = await get_user_lang(chat_id)
-    is_media_message = is_media(message)
 
-    if is_media_message:
-        prompt = message.caption.split("/ai")[1].strip()
-    else:
-        prompt = message.text.split("/ai")[1].strip()
-    
-    if not prompt:
+    if len(message.command) == 1:
         return await message.reply_text(languages[user_lang]["ask_question"])
+
+    prompt = (message.text or message.caption).split(None, 1)[1]
     
-    await prompt_handler(bot, message, prompt, is_media_message)
+    await prompt_handler(bot, message, prompt, is_media(message))
 
 @bot.on_message(filters.private & filters.command("clear"))
 async def clear_chat(bot: TgBot, message: Message):
