@@ -31,7 +31,7 @@ from modules.language import change_user_lang
 from modules.notifications import enable_notifications, disable_notifications
 from modules.broadcast import get_broadcast_message
 from ai.handlers import prompt_handler, clear_chat_handler
-from utils.message import is_media
+from utils.message import is_media, escape_special_chars
 
 load_dotenv()
 timezone = pytz.timezone(os.getenv("TIMEZONE") or "UTC")
@@ -135,7 +135,7 @@ async def get_grades(bot: TgBot, message: Message):
                 else languages[user_lang]["no_comment"],
             )
 
-        await bot.send_message(message.chat.id, grades_message)
+        await bot.send_message(message.chat.id, escape_special_chars(grades_message, excluded_chars=[">", "*"]), parse_mode="MarkdownV2")
     else:
         await bot.send_message(message.chat.id, languages[user_lang]["not_logged_in"])
 

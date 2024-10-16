@@ -26,7 +26,7 @@ async def get_user_lesson(user_id, lesson_id):
 async def set_user_lesson(user_id, lesson):
     try:
         user_lessons = await db.get("user_lessons") or {}
-    except:
+    except Exception as _:
         await db.set("user_lessons", {})
         user_lessons = await db.get("user_lessons") or {}
     if user_id not in user_lessons:

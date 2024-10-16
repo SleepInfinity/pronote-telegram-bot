@@ -32,7 +32,7 @@ async def broadcast_message_handler(bot: TgBot, message: Message, _):
         try:
             await bot.send_message(user_id, broadcast_message)
             sent_to_users += 1
-        except:
+        except Exception as _:
             pass
     await m.edit_text(f"Message sent to {sent_to_users} users successfully.")
 

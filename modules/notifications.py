@@ -3,9 +3,7 @@ import pytz
 import os
 import datetime
 from tgram.types import Message
-import asyncio
 from asyncio import CancelledError
-from modules.database import clients
 from babel.dates import format_date
 from bot_instance import bot
 from modules.language import languages

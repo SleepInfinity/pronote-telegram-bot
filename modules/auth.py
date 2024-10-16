@@ -42,7 +42,7 @@ async def process_login_qrcode(bot: TgBot, message: Message, data: dict):
     try:
         qrcode_data = json.loads(decoded_objects[0].data.decode("utf-8"))
         data["qrcode_data"] = qrcode_data
-    except Exception as e:
+    except Exception as _:
         return await message.reply_text(languages[user_lang]["qrcode_decode_error"])
 
     await message.reply_text(languages[user_lang]["send_pin"])
@@ -63,7 +63,7 @@ async def process_login_qrcode_pin_handler(bot: TgBot, message: Message, data: d
 
     try:
         client = pronotepy.Client.qrcode_login(data["qrcode_data"], pin, str(uuid4()))
-    except Exception as e:
+    except Exception as _:
         return await message.reply_text(languages[user_lang]["login_failed"])
 
     if client.logged_in:
