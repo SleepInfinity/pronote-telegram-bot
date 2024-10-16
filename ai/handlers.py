@@ -1,35 +1,50 @@
-import google.generativeai as genai
+from typing import List
 from modules.language import languages
 from modules.database import get_user_lang
 from tgram.types import Message
+from google.generativeai.generative_models import ChatSession
+from google.generativeai.types.file_types import File
+from google.generativeai.types.generation_types import GenerateContentResponse
+from google.generativeai.protos import Part
 from tgram import TgBot
-from ai.utils import get_user_chat, resolve_media, set_user_chat, clear_user_chat, call_functions
+from ai.utils import (
+    get_user_chat,
+    resolve_media,
+    set_user_chat,
+    clear_user_chat,
+    call_functions,
+)
 
 
-async def prompt_handler(bot: TgBot, message: Message, prompt: str, is_media: bool):
-    user_id = message.from_user.id
-    chat = await get_user_chat(user_id)
+async def prompt_handler(
+    bot: TgBot, message: Message, prompt: str, is_media: bool
+) -> None:
+    user_id: int = message.from_user.id
+    chat: ChatSession = await get_user_chat(user_id)
     if is_media:
-        file = await resolve_media(bot, message)
-        response = chat.send_message([file, prompt])
+        file: File = await resolve_media(bot, message)
+        response: GenerateContentResponse = chat.send_message([file, prompt])
     else:
-        response = chat.send_message(prompt)
+        response: GenerateContentResponse = chat.send_message(prompt)
     while True:
-        response_parts = await call_functions(response, message.from_user.id)
+        response_parts: List[Part] = await call_functions(
+            response, message.from_user.id
+        )
         if response_parts:
-            response = chat.send_message(response_parts)
+            response: GenerateContentResponse = chat.send_message(response_parts)
         else:
             break
 
     await set_user_chat(user_id, chat)
-    text = response.text.replace("\\", "")
+    text: str = response.text.replace("\\", "")
     try:
         await message.reply_text(text)
     except:
         await message.reply_text(text, parse_mode="disabled")
 
-async def clear_chat_handler(bot, message):
-    user_id = message.from_user.id
-    user_lang = await get_user_lang(user_id)
+
+async def clear_chat_handler(bot: TgBot, message: Message):
+    user_id: int = message.from_user.id
+    user_lang: str = await get_user_lang(user_id)
     await clear_user_chat(user_id)
     await message.reply_text(languages[user_lang]["chat_cleared"])

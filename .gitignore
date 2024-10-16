@@ -2,6 +2,7 @@
 __pycache__/
 tests/
 .ruff_cache/
+.mypy_cache/
 
 # Ignore Python bytecode files
 *.pyc
