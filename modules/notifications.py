@@ -175,6 +175,7 @@ async def send_grade_notification(grade, chat_id):
         subject=grade.subject.name,
         grade=grade.grade,
         out_of=grade.out_of,
+        coefficient=grade.coefficient,
         date=grade.date.strftime("%Y-%m-%d"),
         comment=grade.comment if grade.comment else languages[user_lang]["no_comment"],
     )

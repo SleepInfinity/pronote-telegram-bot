@@ -129,13 +129,18 @@ async def get_grades(bot: TgBot, message: Message):
                 subject=grade.subject.name,
                 grade=grade.grade,
                 out_of=grade.out_of,
+                coefficient=grade.coefficient,
                 date=grade.date.strftime("%d/%m/%Y"),
                 comment=grade.comment
                 if grade.comment
                 else languages[user_lang]["no_comment"],
             )
 
-        await bot.send_message(message.chat.id, escape_special_chars(grades_message, excluded_chars=[">", "*"]), parse_mode="MarkdownV2")
+        await bot.send_message(
+            message.chat.id,
+            escape_special_chars(grades_message, excluded_chars=[">", "*"]),
+            parse_mode="MarkdownV2",
+        )
     else:
         await bot.send_message(message.chat.id, languages[user_lang]["not_logged_in"])
 
@@ -180,7 +185,11 @@ async def get_homework(bot: TgBot, message: Message):
                     else languages[user_lang]["not_done"],
                 )
 
-        await bot.send_message(message.chat.id, homework_message)
+        await bot.send_message(
+            message.chat.id,
+            escape_special_chars(homework_message, excluded_chars=["*"]),
+            parse_mode="MarkdownV2",
+        )
     else:
         await bot.send_message(message.chat.id, languages[user_lang]["not_logged_in"])
 

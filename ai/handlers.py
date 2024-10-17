@@ -39,7 +39,7 @@ async def prompt_handler(
     text: str = response.text.replace("\\", "")
     try:
         await message.reply_text(text)
-    except:
+    except Exception as _:
         await message.reply_text(text, parse_mode="disabled")
 
 

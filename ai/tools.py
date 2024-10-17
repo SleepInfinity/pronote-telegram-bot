@@ -20,7 +20,6 @@ async def get_current_time() -> str:
     current_time: str = datetime.datetime.now(timezone).strftime(
         "Day name: %A, Day: %d, Month: %m, Year: %Y, Hour: %H:%M:%S"
     )
-    print(current_time)
     return current_time
 
 

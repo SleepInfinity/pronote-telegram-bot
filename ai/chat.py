@@ -13,6 +13,6 @@ tools_dict: dict = {"get_current_time": get_current_time, "get_homework": get_ho
 
 model: genai.GenerativeModel = genai.GenerativeModel(
     model_name="gemini-1.5-flash-latest",
-    tools=[get_current_time, get_homework],
+    tools=tools_dict.values(),
     system_instruction=open("ai/system_prompt.txt", "r").read(),
 )
