@@ -1,43 +1,44 @@
 import asyncio
-import pytz
 import os
 import datetime
+from typing import List, Set
 from tgram.types import Message
 from asyncio import CancelledError
 from babel.dates import format_date
 from bot_instance import bot
 from modules.language import languages
-from dotenv import load_dotenv
 from modules.database import get_user_lang, clients
 from utils.hashing import get_grade_unique_id, get_homework_unique_id
 from utils.logger import logger
+from pronotepy import Client, Grade, Homework
+from asyncio import Task
+from modules.language import TIMEZONE
 
 user_data_lock = asyncio.Lock()
-load_dotenv()
-timezone = pytz.timezone(os.getenv("TIMEZONE") or "UTC")
-polling_interval = int(os.getenv("POLLING_INTERVAL") or 300)
+
+polling_interval: int = int(os.getenv("POLLING_INTERVAL") or 300)
 
 
-async def get_client(chat_id):
-    user_lang = await get_user_lang(chat_id)
-    client_credentials = clients.get(chat_id)
+async def get_client(chat_id: int) -> Client | None:
+    user_lang: str = await get_user_lang(chat_id)
+    client_credentials: dict = clients.get(chat_id)
     if client_credentials:
-        client = client_credentials["client"]
+        client: Client = client_credentials["client"]
         return client
     await bot.send_message(chat_id, languages[user_lang]["not_logged_in"])
 
 
-async def start_user_task(chat_id):
-    notifications_settings = clients[chat_id]["notifications"]
+async def start_user_task(chat_id: int) -> None:
+    notifications_settings: dict = clients[chat_id]["notifications"]
     if notifications_settings and notifications_settings.get("task") is None:
-        task = asyncio.create_task(check_for_new_notifications(chat_id))
+        task: Task = asyncio.create_task(check_for_new_notifications(chat_id))
         notifications_settings["task"] = task
 
 
-async def stop_user_task(chat_id):
-    notifications_settings = clients[chat_id]["notifications"]
+async def stop_user_task(chat_id: int) -> None:
+    notifications_settings: dict = clients[chat_id]["notifications"]
     if notifications_settings and notifications_settings.get("task") is not None:
-        task = notifications_settings["task"]
+        task: Task = notifications_settings["task"]
         task.cancel()
         try:
             await task
@@ -47,16 +48,14 @@ async def stop_user_task(chat_id):
         notifications_settings["task"] = None
 
 
-async def enable_notifications(message: Message):
-    chat_id = message.chat.id
-    user_lang = await get_user_lang(chat_id)
-    client = await get_client(chat_id)
-    if not client:
-        return
+async def enable_notifications(message: Message) -> None:
+    chat_id: int = message.chat.id
+    user_lang: str = await get_user_lang(chat_id)
+    client: Client = await get_client(chat_id)
 
     await initialize_notifications(message, client)
 
-    notifications_settings = clients[chat_id]["notifications"]
+    notifications_settings: dict = clients[chat_id]["notifications"]
 
     if notifications_settings["notifications_enabled"]:
         return await message.reply_text(
@@ -69,16 +68,14 @@ async def enable_notifications(message: Message):
         await start_user_task(chat_id)
 
 
-async def disable_notifications(message: Message):
-    chat_id = message.chat.id
-    user_lang = await get_user_lang(chat_id)
-    client = await get_client(chat_id)
-    if not client:
-        return
+async def disable_notifications(message: Message) -> None:
+    chat_id: int = message.chat.id
+    user_lang: str = await get_user_lang(chat_id)
+    client: Client = await get_client(chat_id)
 
     await initialize_notifications(message, client)
 
-    notifications_settings = clients[chat_id]["notifications"]
+    notifications_settings: dict = clients[chat_id]["notifications"]
 
     if not notifications_settings["notifications_enabled"]:
         return await message.reply_text(
@@ -91,7 +88,7 @@ async def disable_notifications(message: Message):
         await stop_user_task(chat_id)
 
 
-async def is_notifications_initialized(chat_id):
+async def is_notifications_initialized(chat_id: int) -> bool:
     try:
         clients[chat_id]["notifications"]["notifications_enabled"]
         return True
@@ -99,15 +96,15 @@ async def is_notifications_initialized(chat_id):
         return False
 
 
-async def initialize_notifications(message: Message, client):
+async def initialize_notifications(message: Message, client: Client) -> None:
     chat_id = message.chat.id
     if await is_notifications_initialized(chat_id):
         return
     logger.debug(f"[{str(chat_id)}] Notifications initialization executed.")
-    grades = await get_grades(client)
-    known_grades = set(get_grade_unique_id(grade) for grade in grades)
-    homework = await get_homework(client)
-    known_homework = set(get_homework_unique_id(hw) for hw in homework)
+    grades: List[Grade] = await get_grades(client)
+    known_grades: Set[str] = set(get_grade_unique_id(grade) for grade in grades)
+    homework: List[Homework] = await get_homework(client)
+    known_homework: Set[str] = set(get_homework_unique_id(hw) for hw in homework)
     async with user_data_lock:
         clients[message.chat.id]["notifications"] = {
             "known_grades": known_grades,
@@ -118,25 +115,27 @@ async def initialize_notifications(message: Message, client):
         }
 
 
-async def get_grades(client):
-    grades = client.current_period.grades
+async def get_grades(client: Client) -> List[Grade]:
+    grades: List[Grade] = client.current_period.grades
     return grades
 
 
-async def get_homework(client):
-    today = datetime.datetime.now(timezone).date()
-    homework = client.homework(today)
+async def get_homework(client: Client) -> List[Homework]:
+    today: datetime._Date = datetime.datetime.now(TIMEZONE).date()
+    homework: List[Homework] = client.homework(today)
     return homework
 
 
-async def check_for_new_grades(chat_id, client, known_grades, user_settings):
+async def check_for_new_grades(
+    chat_id: int, client: Client, known_grades: Set[str], user_settings: dict
+) -> None:
     logger.debug(f"[{str(chat_id)}] Checking for new grades")
     # Fetch the current grades
-    grades = await get_grades(client)
-    current_grades = set(get_grade_unique_id(grade) for grade in grades)
+    grades: List[Grade] = await get_grades(client)
+    current_grades: Set[str] = set(get_grade_unique_id(grade) for grade in grades)
 
     # Find new grades
-    new_grades = current_grades - known_grades
+    new_grades: Set[str] = current_grades - known_grades
 
     if new_grades:
         # Update known grades
@@ -151,12 +150,14 @@ async def check_for_new_grades(chat_id, client, known_grades, user_settings):
         logger.info(f"[{str(chat_id)}] No new grades")
 
 
-async def check_for_new_homework(chat_id, client, known_homework, user_settings):
+async def check_for_new_homework(
+    chat_id: int, client: Client, known_homework: Set[str], user_settings: dict
+) -> None:
     logger.debug(f"[{str(chat_id)}] Checking for new homework")
-    homework = await get_homework(client)
-    current_homework = set(get_homework_unique_id(hw) for hw in homework)
+    homework: List[Homework] = await get_homework(client)
+    current_homework: Set[str] = set(get_homework_unique_id(hw) for hw in homework)
 
-    new_homework = current_homework - known_homework
+    new_homework: Set[str] = current_homework - known_homework
 
     if new_homework:
         known_homework.update(new_homework)
@@ -169,9 +170,9 @@ async def check_for_new_homework(chat_id, client, known_homework, user_settings)
         logger.info(f"[{str(chat_id)}] No new homework")
 
 
-async def send_grade_notification(grade, chat_id):
-    user_lang = await get_user_lang(chat_id)
-    message = languages[user_lang]["new_grade_notification"].format(
+async def send_grade_notification(grade: Grade, chat_id: int) -> None:
+    user_lang: str = await get_user_lang(chat_id)
+    message: str = languages[user_lang]["new_grade_notification"].format(
         subject=grade.subject.name,
         grade=grade.grade,
         out_of=grade.out_of,
@@ -182,10 +183,10 @@ async def send_grade_notification(grade, chat_id):
     await bot.send_message(chat_id, message)
 
 
-async def send_homework_notification(homework, chat_id):
-    user_lang = await get_user_lang(chat_id)
-    user_locale = languages[user_lang]["locale"]
-    message = languages[user_lang]["new_homework_notification"].format(
+async def send_homework_notification(homework: Homework, chat_id: int) -> None:
+    user_lang: str = await get_user_lang(chat_id)
+    user_locale: str = languages[user_lang]["locale"]
+    message: str = languages[user_lang]["new_homework_notification"].format(
         subject=homework.subject.name,
         date=format_date(homework.date, format="EEEE d MMMM", locale=user_locale),
         description=homework.description,
@@ -193,27 +194,27 @@ async def send_homework_notification(homework, chat_id):
     await bot.send_message(chat_id, message)
 
 
-async def check_for_new_notifications(chat_id):
+async def check_for_new_notifications(chat_id: int) -> None:
     try:
         while True:
             async with user_data_lock:
-                client_credentials = clients.get(chat_id)
-                client = await get_client(chat_id)
+                client_credentials: dict = clients.get(chat_id)
+                client: Client = await get_client(chat_id)
                 if not client:
                     await stop_user_task(chat_id)
                     break
                 client.session_check()
 
-                user_settings = client_credentials["notifications"]
+                user_settings: dict = client_credentials["notifications"]
                 if not user_settings:
                     # User data no longer exists, exit the thread
                     await stop_user_task(chat_id)
                     break
-                notifications_enabled = user_settings["notifications_enabled"]
-                interval = user_settings["interval"]
+                notifications_enabled: bool = user_settings["notifications_enabled"]
+                interval: int = user_settings["interval"]
 
-                known_grades = user_settings["known_grades"]
-                known_homework = user_settings["known_homework"]
+                known_grades: Set[str] = user_settings["known_grades"]
+                known_homework: Set[str] = user_settings["known_homework"]
 
             if notifications_enabled:
                 try:

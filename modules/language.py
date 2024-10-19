@@ -1,11 +1,18 @@
 import json
+import os
+import pytz
 from modules.database import db
+from pytz.tzinfo import DstTzInfo
 from tgram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
 from bot_instance import bot
 from modules.database import get_user_lang
 
 with open("languages.json", "r", encoding="utf-8") as f:
     languages: dict = json.load(f)
+
+TIMEZONE_CONFIG: str = os.getenv("TIMEZONE") or "UTC"
+
+TIMEZONE: DstTzInfo = pytz.timezone(TIMEZONE_CONFIG)
 
 
 async def make_languages_keyboard() -> InlineKeyboardMarkup:

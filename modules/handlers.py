@@ -1,8 +1,5 @@
-import os
 import datetime
 from typing import List
-import pytz
-from pytz.tzinfo import DstTzInfo
 from tgram import TgBot, filters
 from tgram.types import (
     Message,
@@ -27,7 +24,6 @@ from modules.database import (
     set_user_lesson,
 )
 from modules.language import setup_user_lang, languages
-from dotenv import load_dotenv
 from pronotepy import Client, Grade, Homework, Lesson
 from modules.settings import settings_message
 from modules.language import change_user_lang
@@ -35,12 +31,7 @@ from modules.notifications import enable_notifications, disable_notifications
 from modules.broadcast import get_broadcast_message
 from ai.handlers import prompt_handler, clear_chat_handler
 from utils.message import is_media, escape_special_chars
-
-load_dotenv()
-
-TIMEZONE_CONFIG: str = os.getenv("TIMEZONE") or "UTC"
-
-TIMEZONE: DstTzInfo = pytz.timezone(TIMEZONE_CONFIG)
+from modules.language import TIMEZONE
 
 
 @bot.on_callback_query(filters.private & filters.regex(r"^set\_lang\_"))

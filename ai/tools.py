@@ -1,23 +1,14 @@
 import datetime
-import os
-from dotenv import load_dotenv
-import pytz
-from pytz.tzinfo import DstTzInfo
 from modules.database import clients
 from pronotepy import Client, Homework
-
-load_dotenv()
-
-timezone_config: str = os.getenv("TIMEZONE") or "UTC"
-
-timezone: DstTzInfo = pytz.timezone(timezone_config)
+from modules.language import TIMEZONE
 
 
 async def get_current_time() -> str:
     """
     Get the current time and date.
     """
-    current_time: str = datetime.datetime.now(timezone).strftime(
+    current_time: str = datetime.datetime.now(TIMEZONE).strftime(
         "Day name: %A, Day: %d, Month: %m, Year: %Y, Hour: %H:%M:%S"
     )
     return current_time
@@ -36,7 +27,7 @@ async def get_homework(user_id: int = 0) -> str:
     if client_credentials:
         client: Client = client_credentials["client"]
         client.session_check()
-        today = datetime.datetime.now(timezone).date()
+        today = datetime.datetime.now(TIMEZONE).date()
         homeworks: Homework = client.homework(today)
         if not homeworks:
             return "There is no upcoming homework."
