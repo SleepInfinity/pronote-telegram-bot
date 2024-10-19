@@ -102,11 +102,7 @@ Une fois le bot en fonctionnement, vous pouvez interagir avec lui via Telegram e
 
 ## Liste des tâches
 
-- [x] Ajouter des notifications pour les notes, les devoirs et les emplois du temps.
-- [x] Implémenter le support multilingue (anglais, français, et plus).
-- [x] Intégrer l'assistance de l'IA pour les devoirs et les questions générales.
-- [ ] Étendre les fonctionnalités pour inclure d'autres fonctionnalités Pronote.
-- [ ] Nettoyer le code et le répartir dans plusieurs fichiers pour plus de lisibilité et d'évolutivité.
+Le bot est en cours de développement actif et nous avons une liste de tâches et d'améliorations à venir. Vous pouvez consulter la liste complète des tâches à effectuer dans [TODO.md](TODO.md).
 
 ## Contribuer
 

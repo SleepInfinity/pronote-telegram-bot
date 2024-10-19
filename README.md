@@ -102,11 +102,7 @@ Once the bot is running, you can interact with it through Telegram. Use the foll
 
 ## To-Do List
 
-- [x] Add notifications for grades, homework, and schedules.
-- [x] Implement multi-language support (English, French, and more).
-- [x] Integrate AI assistance for homework and general questions.
-- [ ] Extend features to include additional Pronote functionalities.
-- [ ] Clean up the code and spread it into multiple files for more readability and scalability.
+The bot is under active development, and we have a list of upcoming tasks and improvements. You can check the full to-do list in [TODO.md](TODO.md).
 
 ## Contributing
 
