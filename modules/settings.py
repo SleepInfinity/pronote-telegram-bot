@@ -3,7 +3,7 @@ from modules.language import languages
 from tgram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
 
 
-async def make_settings_keyboard(user_lang: str):
+async def make_settings_keyboard(user_lang: str) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         [
             [
@@ -16,8 +16,8 @@ async def make_settings_keyboard(user_lang: str):
     )
 
 
-async def settings_message(message: Message):
-    user_lang = await get_user_lang(message.chat.id)
+async def settings_message(message: Message) -> None:
+    user_lang: str = await get_user_lang(message.chat.id)
     await message.reply_text(
         text=languages[user_lang]["settings"],
         reply_markup=await make_settings_keyboard(user_lang),

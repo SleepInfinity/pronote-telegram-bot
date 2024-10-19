@@ -2,26 +2,24 @@ import hashlib
 from pronotepy.dataClasses import Grade, Homework
 
 
-def get_grade_unique_id(grade: Grade):
-    grade_dict = grade.to_dict()
-    subject_name = grade_dict["subject"]["name"]
-    date = grade_dict["date"].isoformat()
-    comment = grade_dict.get("comment", "")
-    coefficient = grade_dict.get("coefficient", "")
-    out_of = grade_dict.get("out_of", "")
-    grade_value = grade_dict.get("grade", "")
-    unique_string = (
+def get_grade_unique_id(grade: Grade) -> str:
+    subject_name = grade.subject.name
+    date = grade.date.isoformat()
+    comment = grade.comment
+    coefficient = grade.coefficient
+    out_of = grade.out_of
+    grade_value = grade.grade
+    unique_string: str = (
         f"{subject_name}|{date}|{comment}|{coefficient}|{out_of}|{grade_value}"
     )
-    unique_id = hashlib.sha256(unique_string.encode("utf-8")).hexdigest()
+    unique_id: str = hashlib.sha256(unique_string.encode("utf-8")).hexdigest()
     return unique_id
 
 
-def get_homework_unique_id(homework: Homework):
-    homework_dict = homework.to_dict()
-    subject_name = homework_dict["subject"]["name"]
-    date = homework_dict["date"].isoformat()
-    description = homework_dict["description"]
-    unique_string = f"{subject_name}|{date}|{description}"
-    unique_id = hashlib.sha256(unique_string.encode("utf-8")).hexdigest()
+def get_homework_unique_id(homework: Homework) -> str:
+    subject_name = homework.subject.name
+    date = homework.date.isoformat()
+    description = homework.description
+    unique_string: str = f"{subject_name}|{date}|{description}"
+    unique_id: str = hashlib.sha256(unique_string.encode("utf-8")).hexdigest()
     return unique_id

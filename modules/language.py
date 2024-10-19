@@ -5,10 +5,10 @@ from bot_instance import bot
 from modules.database import get_user_lang
 
 with open("languages.json", "r", encoding="utf-8") as f:
-    languages = json.load(f)
+    languages: dict = json.load(f)
 
 
-async def make_languages_keyboard():
+async def make_languages_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         [
             [
@@ -22,8 +22,8 @@ async def make_languages_keyboard():
     )
 
 
-async def setup_user_lang(user_id):
-    user_languages = await db.get("user_languages") or {}
+async def setup_user_lang(user_id: int) -> bool:
+    user_languages: dict = await db.get("user_languages") or {}
     if user_languages.get(user_id):
         return True
 
@@ -35,9 +35,9 @@ async def setup_user_lang(user_id):
     return False
 
 
-async def change_user_lang(message: Message):
-    user_id = message.chat.id
-    user_lang = await get_user_lang(user_id)
+async def change_user_lang(message: Message) -> None:
+    user_id: int = message.chat.id
+    user_lang: str = await get_user_lang(user_id)
     await message.edit_text(
         text=languages[user_lang]["choose_language"],
         reply_markup=await make_languages_keyboard(),
