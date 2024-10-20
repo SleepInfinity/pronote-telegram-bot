@@ -15,6 +15,7 @@ Below is a list of current development tasks and features we're working on, orga
 - [ ] Add the student's overall average and the class overall average in the grades message.
 
 ## Homework
+- [ ] Move homework from a message to an inline keyboard with pagination.
 - [ ] Add functionality for students to mark homework as completed within the bot and even ask the AI to do it.
 - [ ] Provide reminders for unfinished homework close to their due date.
 
