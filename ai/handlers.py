@@ -24,8 +24,10 @@ async def prompt_handler(
     chat: ChatSession = await get_user_chat(user_id)
     if is_media:
         file: File = await resolve_media(bot, message)
+        await bot.send_chat_action(message.chat.id, "typing")
         response: GenerateContentResponse = chat.send_message([file, prompt])
     else:
+        await bot.send_chat_action(message.chat.id, "typing")
         response: GenerateContentResponse = chat.send_message(prompt)
     while True:
         response_parts: List[Part] = await call_functions(

@@ -77,9 +77,11 @@ async def resolve_media(bot: TgBot, message: Message) -> GoogleFile:
 
 async def download_file(bot: TgBot, message: Message) -> Tuple[BytesIO, str]:
     if message.photo:
+        await bot.send_chat_action(message.chat.id, "upload_photo")
         file: PhotoSize = message.photo[-1]
         mime_type: str = "image/png"
     else:
+        await bot.send_chat_action(message.chat.id, "upload_document")
         file: Document = message.document
         mime_type: str = file.mime_type
 
