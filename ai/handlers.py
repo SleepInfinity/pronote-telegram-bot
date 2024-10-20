@@ -6,6 +6,7 @@ from google.generativeai.generative_models import ChatSession
 from google.generativeai.types.file_types import File
 from google.generativeai.types.generation_types import GenerateContentResponse
 from google.generativeai.protos import Part
+from utils.message import auto_escape
 from tgram import TgBot
 from ai.utils import (
     get_user_chat,
@@ -36,7 +37,7 @@ async def prompt_handler(
             break
 
     await set_user_chat(user_id, chat)
-    text: str = response.text.replace("\\", "")
+    text: str = auto_escape(response.text)
     try:
         await message.reply_text(text)
     except Exception as _:

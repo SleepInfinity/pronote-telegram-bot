@@ -20,6 +20,8 @@ Below is a list of current development tasks and features we're working on, orga
 - [ ] Provide reminders for unfinished homework close to their due date.
 
 ## AI Integration
+- [ ] Add support for sending multiple images/documents in the same message to the AI.
+- [ ] Add support for sending videos to the AI.
 - [ ] Add a menu in the settings to allow students to give personalized information so the AI can better understand and assist them.
 
 ## Notifications
